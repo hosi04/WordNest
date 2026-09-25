@@ -1,8 +1,9 @@
 // All Supabase access (data + auth) goes through this module.
-import type { Session } from '@supabase/supabase-js'
+import type { AuthError, Session } from '@supabase/supabase-js'
 import { SAMPLE_DECK, SAMPLE_WORDS } from '../data/sampleDeck'
 import { addDays, computeStreak, toDayKey } from './date'
 import { review, type Rating } from './srs'
+import { usernameToEmail } from './username'
 import type { ReviewRow } from './stats'
 import { supabase } from './supabase'
 
@@ -24,20 +25,57 @@ export function onAuthChange(callback: (session: Session | null) => void): () =>
   return () => data.subscription.unsubscribe()
 }
 
-export async function signInWithEmail(email: string): Promise<void> {
-  const { error } = await client().auth.signInWithOtp({
-    email,
-    options: { emailRedirectTo: window.location.origin },
-  })
-  if (error) throw error
+export type AuthProblem =
+  | 'invalidCredentials'
+  | 'usernameTaken'
+  | 'weakPassword'
+  | 'confirmEmailOn'
+  | 'signupDisabled'
+  | 'rateLimited'
+  | 'unknown'
+
+/** Auth failure with a UI-translatable reason (message keeps the raw Supabase text). */
+export class AuthFailure extends Error {
+  readonly problem: AuthProblem
+  constructor(problem: AuthProblem, message: string = problem) {
+    super(message)
+    this.name = 'AuthFailure'
+    this.problem = problem
+  }
 }
 
-export async function signInWithGoogle(): Promise<void> {
-  const { error } = await client().auth.signInWithOAuth({
-    provider: 'google',
-    options: { redirectTo: window.location.origin },
-  })
-  if (error) throw error
+const AUTH_PROBLEMS: Partial<Record<string, AuthProblem>> = {
+  invalid_credentials: 'invalidCredentials',
+  user_already_exists: 'usernameTaken',
+  email_exists: 'usernameTaken',
+  weak_password: 'weakPassword',
+  email_not_confirmed: 'confirmEmailOn',
+  signup_disabled: 'signupDisabled',
+  email_provider_disabled: 'signupDisabled',
+  over_request_rate_limit: 'rateLimited',
+  over_email_send_rate_limit: 'rateLimited',
+}
+
+function authFailure(error: AuthError): AuthFailure {
+  const problem = error.code ? AUTH_PROBLEMS[error.code] : undefined
+  return new AuthFailure(problem ?? 'unknown', error.message)
+}
+
+export async function signInWithUsername(username: string, password: string): Promise<void> {
+  const { error } = await client().auth.signInWithPassword({ email: usernameToEmail(username), password })
+  if (error) throw authFailure(error)
+}
+
+export async function signUpWithUsername(username: string, password: string): Promise<void> {
+  const { data, error } = await client().auth.signUp({ email: usernameToEmail(username), password })
+  if (error) throw authFailure(error)
+  // No session means Supabase wants to confirm the (internal, undeliverable) email first.
+  if (!data.session) throw new AuthFailure('confirmEmailOn')
+}
+
+export async function updatePassword(password: string): Promise<void> {
+  const { error } = await client().auth.updateUser({ password })
+  if (error) throw authFailure(error)
 }
 
 export async function signOut(): Promise<void> {

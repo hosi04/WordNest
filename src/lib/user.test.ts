@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { displayName } from './user'
 
 describe('displayName', () => {
-  it('prefers the full name from the Google profile', () => {
+  it('prefers the full name saved in the profile', () => {
     expect(displayName({ email: 'thanh@gmail.com', user_metadata: { full_name: ' Nguyễn Văn Thành ' } })).toBe(
       'Nguyễn Văn Thành',
     )
