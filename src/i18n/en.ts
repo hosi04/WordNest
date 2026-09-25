@@ -1,0 +1,348 @@
+// English UI copy. The learner is Vietnamese, so word meanings and example translations
+// stay in Vietnamese; only the interface is translated.
+import type { Messages } from './vi'
+
+const longDate = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' })
+const shortWeekday = new Intl.DateTimeFormat('en-US', { weekday: 'short', timeZone: 'UTC' })
+const utc = (dayKey: string) => new Date(`${dayKey}T00:00:00Z`)
+
+const decimal = (n: number) => (Math.round(n * 10) / 10).toString()
+const plural = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`
+
+export const en: Messages = {
+  common: {
+    loading: 'Loading…',
+    cancel: 'Cancel',
+    save: 'Save',
+    close: 'Close',
+    backToOverview: 'Back to overview',
+    wordBook: 'Word book',
+    speak: (word) => `Pronounce ${word}`,
+  },
+
+  nav: {
+    mainMenu: 'Main menu',
+    overview: 'Overview',
+    study: 'Flashcards',
+    quiz: 'Quiz',
+    words: 'Word book',
+    wordsShort: 'Words',
+    stats: 'Statistics',
+    settings: 'Settings',
+  },
+
+  date: {
+    long: (dayKey) => longDate.format(utc(dayKey)),
+    weekdayShort: (dayKey) => shortWeekday.format(utc(dayKey)),
+  },
+
+  interval: {
+    lessThanMinute: '< 1 min',
+    minutes: (n) => `${n} min`,
+    hours: (n) => plural(n, 'hour'),
+    days: (n) => plural(n, 'day'),
+    months: (n) => `${decimal(n)} ${n === 1 ? 'month' : 'months'}`,
+    years: (n) => `${decimal(n)} ${n === 1 ? 'year' : 'years'}`,
+  },
+
+  status: {
+    new: 'New',
+    learning: 'Learning',
+    mastered: 'Mastered',
+  },
+
+  ratings: {
+    1: 'Again',
+    2: 'Hard',
+    3: 'Good',
+    4: 'Easy',
+  },
+
+  config: {
+    title: 'Supabase is not configured',
+    body: 'Create .env.local from .env.example, fill in the two variables below (from Supabase > Project Settings > API), then restart npm run dev.',
+  },
+
+  streak: {
+    days: (n) => `${n}-day streak`,
+    loading: 'Streak …',
+    failedTitle: 'Streak —',
+    failed: 'Could not load your streak.',
+    studiedToday: 'You studied today. Keep it up!',
+    notYet: 'Review at least 1 card to keep your streak today.',
+  },
+
+  language: {
+    label: 'Display language',
+    change: (current) => `Change display language (current: ${current})`,
+    vi: 'Tiếng Việt',
+    en: 'English',
+  },
+
+  login: {
+    title: 'Sign in',
+    subtitle: 'Sync your vocabulary between your computer and your phone.',
+    email: 'Email',
+    emailPlaceholder: 'you@example.com',
+    sendLink: 'Send sign-in link',
+    sentTitle: 'Sign-in link sent!',
+    sentText: (email) => `Open your inbox at ${email} and click the link to enter WordNest.`,
+    error: (message) => `Something went wrong: ${message}`,
+    or: 'or',
+    google: 'Sign in with Google',
+  },
+
+  dashboard: {
+    greeting: {
+      morning: 'Good morning!',
+      noon: 'Good afternoon!',
+      afternoon: 'Good afternoon!',
+      evening: 'Good evening!',
+    },
+    question: 'What shall we learn today?',
+    account: (name) => `${name}'s account and settings`,
+    loadError: (message) => `Could not load the overview: ${message}`,
+    stats: {
+      streak: 'Day streak',
+      mastered: 'Words mastered',
+      due: 'Words due today',
+      accuracy: '7-day accuracy',
+    },
+    review: {
+      eyebrow: "Today's review",
+      waiting: (n) => `${plural(n, 'word')} waiting for review`,
+      estimate: (minutes) =>
+        `About ${plural(minutes, 'minute')}. Spaced repetition reminds you right before you forget.`,
+      allDone: "You've reviewed every due card",
+      learnMoreHint: 'Learn a few new words to keep the momentum.',
+      seeYouTomorrow: 'See you tomorrow.',
+      start: 'Start review',
+      learnNew: (n) => `Learn ${plural(n, 'new word')}`,
+      takeQuiz: 'Take a quiz',
+    },
+    wordOfDay: {
+      title: 'Word of the day',
+      empty: 'Add words to your word book to get a word of the day.',
+    },
+    decks: {
+      title: 'Your decks',
+      seeAll: 'See all',
+      empty: 'No decks yet.',
+      words: (n) => plural(n, 'word'),
+      masteredAria: (percent, name) => `${percent}% of ${name} mastered`,
+    },
+    week: {
+      title: 'This week',
+      reviews: (n) => plural(n, 'review'),
+      up: (percent) => ` · up ${percent}% from last week`,
+      down: (percent) => ` · down ${percent}% from last week`,
+      tooltip: (n) => plural(n, 'review'),
+      caption: 'Reviews in the last 7 days',
+      day: 'Day',
+      count: 'Reviews',
+      today: ' (today)',
+    },
+  },
+
+  words: {
+    title: 'Word book',
+    summary: (total, mastered) => `${plural(total, 'word')} saved · ${mastered} mastered`,
+    add: 'Add word',
+    searchLabel: 'Search your word book',
+    searchPlaceholder: 'Search your word book…',
+    filterLabel: 'Filter by status',
+    all: 'All',
+    empty: 'No words found.',
+    loading: 'Loading your word book…',
+    loadError: (message) => `Could not load your word book: ${message}`,
+    columns: {
+      word: 'Word',
+      meaning: 'Meaning',
+      level: 'Level',
+      status: 'Status',
+      nextReview: 'Next review',
+    },
+    nextReview: (days) =>
+      days === null ? '—' : days <= 0 ? 'Today' : days === 1 ? 'Tomorrow' : `In ${days} days`,
+    detail: {
+      aria: (word) => `Details for ${word}`,
+      close: 'Close details',
+      deck: (name) => `Deck: ${name}`,
+      meaning: 'Meaning',
+      examples: 'Examples',
+      synonyms: 'Synonyms',
+      memory: 'Memory strength',
+      reviewThis: 'Review this word',
+      edit: 'Edit',
+    },
+    form: {
+      addTitle: 'Add word',
+      editTitle: 'Edit word',
+      word: 'English word',
+      wordPlaceholder: 'e.g. resilient',
+      autofill: 'Autofill',
+      duplicate: 'This word is already in your word book.',
+      duplicateNamed: (word) => `"${word}" is already in your word book.`,
+      notFound: 'This word was not found in the dictionary.',
+      dictionaryDown: (status) => `The dictionary is unavailable (error ${status}).`,
+      lookupFailed: 'Could not look up the word.',
+      typeManually: 'You can fill it in yourself.',
+      filled: 'Filled in from Free Dictionary.',
+      meaning: 'Vietnamese meaning',
+      meaningPlaceholder: 'e.g. kiên cường, mau phục hồi',
+      ipa: 'Pronunciation (IPA)',
+      partOfSpeech: 'Part of speech',
+      partOfSpeechPlaceholder: 'noun, verb, adjective…',
+      deck: 'Deck',
+      noDeck: '(No deck)',
+      level: 'Level',
+      noLevel: '(Not set)',
+      definition: 'English definition',
+      examples: 'Example sentences',
+      exampleEn: 'English sentence',
+      exampleVi: 'Vietnamese translation',
+      exampleEnAria: (i) => `Example ${i} (English)`,
+      exampleViAria: (i) => `Example ${i} (translation)`,
+      removeExample: (i) => `Remove example ${i}`,
+      addExample: 'Add example',
+      synonyms: 'Synonyms (comma-separated)',
+      delete: 'Delete word',
+      confirmDelete: (word) => `Delete "${word}" from your word book?`,
+      create: 'Add word',
+    },
+  },
+
+  study: {
+    allDecks: 'All decks',
+    progress: 'Progress',
+    exit: 'Exit',
+    hint: 'Tap the card or press Space to see the meaning',
+    flip: 'Flip card',
+    shortcuts: 'Shortcuts',
+    remembered: (n) => `Remembered ${n}`,
+    again: (n) => `To relearn ${n}`,
+    remaining: (n) => `Remaining ${n}`,
+    loading: 'Loading cards…',
+    loadError: (message) => `Could not load cards: ${message}`,
+    saveError: (message) => `Could not save your answer: ${message}`,
+    emptyTitle: 'Nothing to study right now',
+    emptyText:
+      "You've reviewed every due card and learned today's new words. Add more words or come back later.",
+    doneTitle: 'All done!',
+    doneText: (cards, ratings) =>
+      `You reviewed ${plural(cards, 'card')} with ${plural(ratings, 'rating')}. We'll remind you right before you forget.`,
+  },
+
+  quiz: {
+    eyebrow: 'Quick quiz',
+    question: (n, total) => `Question ${n} / ${total}`,
+    progress: 'Progress',
+    segment: (n, state) =>
+      `Question ${n}: ${{ correct: 'correct', wrong: 'wrong', current: 'current', todo: 'not answered' }[state]}`,
+    exit: 'Exit quiz',
+    prompt: 'Choose the correct meaning',
+    correctAria: 'Correct answer',
+    wrongAria: 'Your wrong choice',
+    correctTitle: (xp) => `Correct! +${xp} XP`,
+    wrongTitle: 'Not quite — this word goes back into review now',
+    synonyms: (list) => ` Synonyms: ${list}.`,
+    next: 'Continue',
+    seeResults: 'See results',
+    result: 'Result',
+    perfect: 'Perfect!',
+    good: 'Well done!',
+    keepGoing: 'Keep going, a little more review will help!',
+    wrongList: 'Words you missed are back in your review queue:',
+    newQuiz: 'New quiz',
+    reviewNow: 'Review now',
+    notEnoughTitle: 'Not enough words for a quiz',
+    notEnoughText: 'You need at least 4 words with different meanings.',
+    addWords: 'Add words',
+    loading: 'Building your quiz…',
+    loadError: (message) => `Could not load the quiz: ${message}`,
+    saveError: (message) => `Could not save your answer: ${message}`,
+  },
+
+  stats: {
+    placeholder: 'This screen is not in the spec yet; to be discussed.',
+  },
+
+  settings: {
+    title: 'Settings',
+    loading: 'Loading settings…',
+    loadError: (message) => `Could not load settings: ${message}`,
+    language: {
+      title: 'Display language',
+      description: 'Changes the interface only. Word meanings and translations stay in Vietnamese.',
+    },
+    account: {
+      title: 'Account',
+      signedInAs: (email) => `Signed in as ${email}`,
+      displayName: 'Display name',
+      saveName: 'Save name',
+      saved: 'Display name saved.',
+      signOut: 'Sign out',
+    },
+    study: {
+      title: 'Study',
+      description: 'The most new words added to your flashcard session each day. Due cards are always reviewed.',
+      newPerDay: 'New words per day',
+      saved: 'Saved. Applies from your next session.',
+    },
+    backup: {
+      title: 'Backup',
+      description: 'Download all your decks, words, review history and settings as a JSON file.',
+      export: 'Export data (JSON)',
+      fileName: 'wordnest-backup',
+      done: (words, reviews) => `Exported ${plural(words, 'word')} and ${plural(reviews, 'review')}.`,
+    },
+    decks: {
+      title: 'Decks',
+      description: 'Deleting a deck keeps its words.',
+      empty: 'No decks yet.',
+      words: (n) => plural(n, 'word'),
+      edit: (name) => `Edit deck ${name}`,
+      delete: (name) => `Delete deck ${name}`,
+      confirmDelete: (name, words) =>
+        `Delete "${name}"?${words ? ` Its ${plural(words, 'word')} will stay in your word book.` : ''}`,
+      deleteError: (message) => `Could not delete: ${message}`,
+      add: 'Add deck',
+      addTitle: 'Add deck',
+      editTitle: 'Edit deck',
+      name: 'Deck name',
+      namePlaceholder: 'e.g. Travel',
+      color: 'Color',
+      descriptionLabel: 'Description (optional)',
+      colors: {
+        terracotta: 'Terracotta',
+        green: 'Green',
+        blue: 'Blue',
+        bronze: 'Bronze',
+        purple: 'Purple',
+        pink: 'Pink',
+        teal: 'Teal',
+        gray: 'Gray',
+      },
+    },
+    csv: {
+      title: 'Import from CSV',
+      description: (columns) => `The first row holds the column names: ${columns}.`,
+      deck: 'Add to deck',
+      choose: 'Choose a .csv file',
+      hint: 'Save from Excel/Google Sheets as CSV (UTF-8)',
+      valid: (n) => `${plural(n, 'valid word')}`,
+      duplicates: (n) => ` · ${n} already in your word book will be skipped`,
+      moreErrors: (n) => `… and ${plural(n, 'more error')}`,
+      import: (n) => `Import ${plural(n, 'word')}`,
+      done: (added, skipped) =>
+        `Added ${plural(added, 'word')}${skipped ? `, skipped ${skipped} already in your word book` : ''}.`,
+      errors: {
+        empty: 'The file is empty.',
+        missingColumns: (columns) => `Missing required columns: ${columns}.`,
+        missingFields: (line) => `Line ${line}: missing the word or its Vietnamese meaning.`,
+        duplicate: (line, word) => `Line ${line}: "${word}" appears more than once in the file.`,
+        badLevel: (line, level) => `Line ${line}: level "${level}" is not valid and was left blank.`,
+      },
+    },
+  },
+}
