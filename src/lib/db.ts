@@ -223,25 +223,33 @@ async function countRows(table: 'decks' | 'words'): Promise<number> {
   return count ?? 0
 }
 
-let seeding: Promise<void> | null = null
+// One seeding run per account, so parallel callers (StrictMode, several pages) don't insert twice.
+const seeding = new Map<string, Promise<void>>()
 
 /** On a brand-new account (no decks, no words), create the sample deck. */
-export function ensureSampleData(): Promise<void> {
-  seeding ??= (async () => {
-    const [decks, words] = await Promise.all([countRows('decks'), countRows('words')])
-    if (decks > 0 || words > 0) return
+export async function ensureSampleData(): Promise<void> {
+  const session = await getSession()
+  if (!session) return
+  const userId = session.user.id
+  let run = seeding.get(userId)
+  if (!run) {
+    run = (async () => {
+      const [decks, words] = await Promise.all([countRows('decks'), countRows('words')])
+      if (decks > 0 || words > 0) return
 
-    const { data: deck, error } = await client().from('decks').insert(SAMPLE_DECK).select().single()
-    if (error) throw error
-    const { error: wordsError } = await client()
-      .from('words')
-      .insert(SAMPLE_WORDS.map((w) => ({ ...w, deck_id: deck.id })))
-    if (wordsError) throw wordsError
-  })().catch((err) => {
-    seeding = null
-    throw err
-  })
-  return seeding
+      const { data: deck, error } = await client().from('decks').insert(SAMPLE_DECK).select().single()
+      if (error) throw error
+      const { error: wordsError } = await client()
+        .from('words')
+        .insert(SAMPLE_WORDS.map((w) => ({ ...w, deck_id: deck.id })))
+      if (wordsError) throw wordsError
+    })().catch((err) => {
+      seeding.delete(userId)
+      throw err
+    })
+    seeding.set(userId, run)
+  }
+  return run
 }
 
 export async function getDeck(id: string): Promise<Deck | null> {
@@ -309,7 +317,12 @@ export async function getNewWords(limit: number, deckId?: string): Promise<Word[
 /** How many words got their very first review today (counts against new_per_day). */
 export async function countNewStartedToday(): Promise<number> {
   const since = startOfToday()
-  const { data: today, error } = await client().from('reviews').select('word_id').gte('reviewed_at', since)
+  // Only flashcard reviews count: answering a quiz question does not "start" a new word.
+  const { data: today, error } = await client()
+    .from('reviews')
+    .select('word_id')
+    .eq('mode', 'flashcard')
+    .gte('reviewed_at', since)
   if (error) throw error
   const ids = [...new Set(today.map((r) => r.word_id as string))]
   if (ids.length === 0) return 0
@@ -317,6 +330,7 @@ export async function countNewStartedToday(): Promise<number> {
   const { data: earlier, error: earlierError } = await client()
     .from('reviews')
     .select('word_id')
+    .eq('mode', 'flashcard')
     .in('word_id', ids)
     .lt('reviewed_at', since)
   if (earlierError) throw earlierError
@@ -393,8 +407,8 @@ export async function updateNewPerDay(newPerDay: number): Promise<void> {
 }
 
 /** Stored in the auth profile (user_metadata.ui_language), so no schema change is needed. */
-export async function updateUiLanguage(lang: 'vi' | 'en'): Promise<void> {
-  const { error } = await client().auth.updateUser({ data: { ui_language: lang } })
+export async function updateUiLanguage(lang: 'vi' | 'en', chosenAt: number): Promise<void> {
+  const { error } = await client().auth.updateUser({ data: { ui_language: lang, ui_language_at: chosenAt } })
   if (error) throw error
 }
 

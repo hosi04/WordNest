@@ -2,7 +2,8 @@ import { LogOut } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { useAuth } from '../../auth/AuthContext'
 import { useI18n } from '../../i18n/I18nContext'
-import { AuthFailure, signOut, updateDisplayName, updatePassword } from '../../lib/db'
+import { signOutByUser } from '../../auth/signOut'
+import { AuthFailure, updateDisplayName, updatePassword } from '../../lib/db'
 import { displayName } from '../../lib/user'
 import { PASSWORD_MIN, usernameFromEmail } from '../../lib/username'
 import { PasswordInput } from '../PasswordInput'
@@ -117,7 +118,11 @@ export function AccountSection() {
         <StatusText status={passwordStatus} />
       </form>
 
-      <button type="button" onClick={() => signOut()} className={`${SECONDARY_BTN} mt-6`}>
+      <button
+        type="button"
+        onClick={() => signOutByUser()}
+        className={`${SECONDARY_BTN} mt-6`}
+      >
         <LogOut className="size-5" aria-hidden />
         {a.signOut}
       </button>

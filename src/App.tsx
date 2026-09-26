@@ -1,3 +1,4 @@
+import { lazy } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router'
 import { AuthProvider } from './auth/AuthProvider'
 import { RequireAuth } from './auth/RequireAuth'
@@ -7,11 +8,14 @@ import { isSupabaseConfigured } from './lib/supabase'
 import { ConfigMissingPage } from './pages/ConfigMissingPage'
 import { DashboardPage } from './pages/DashboardPage'
 import { LoginPage } from './pages/LoginPage'
-import { QuizPage } from './pages/QuizPage'
-import { SettingsPage } from './pages/SettingsPage'
-import { StatsPage } from './pages/StatsPage'
-import { StudyPage } from './pages/StudyPage'
-import { WordsPage } from './pages/WordsPage'
+
+// Pages other than the overview are loaded on first visit to keep the initial bundle small
+// (AppLayout shows a spinner via Suspense meanwhile).
+const StudyPage = lazy(() => import('./pages/StudyPage').then((m) => ({ default: m.StudyPage })))
+const QuizPage = lazy(() => import('./pages/QuizPage').then((m) => ({ default: m.QuizPage })))
+const WordsPage = lazy(() => import('./pages/WordsPage').then((m) => ({ default: m.WordsPage })))
+const StatsPage = lazy(() => import('./pages/StatsPage').then((m) => ({ default: m.StatsPage })))
+const SettingsPage = lazy(() => import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })))
 
 export function App() {
   if (!isSupabaseConfigured) {

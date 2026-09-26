@@ -1,3 +1,5 @@
+import { LoaderCircle } from 'lucide-react'
+import { Suspense } from 'react'
 import { Outlet, useLocation } from 'react-router'
 import { LanguageFab } from '../../i18n/LanguageFab'
 import { BottomNav } from './BottomNav'
@@ -19,7 +21,15 @@ export function AppLayout() {
         // Bottom padding leaves room for the language button (and the bottom nav on phones).
         className={`mx-auto max-w-[1600px] px-4 pt-6 md:px-12 md:pt-10 md:pb-24 ${focus ? 'pb-24' : 'pb-40'}`}
       >
-        <Outlet />
+        <Suspense
+          fallback={
+            <div className="flex justify-center py-20">
+              <LoaderCircle className="size-8 animate-spin text-accent" aria-hidden />
+            </div>
+          }
+        >
+          <Outlet />
+        </Suspense>
       </main>
       {!focus && <BottomNav />}
       <LanguageFab aboveBottomNav={!focus} />

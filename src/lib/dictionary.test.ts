@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseEntries } from './dictionary'
+import { parseEntries, parseWiktionary, stripHtml } from './dictionary'
 
 describe('parseEntries', () => {
   it('returns null for an empty response', () => {
@@ -45,5 +45,50 @@ describe('parseEntries', () => {
     expect(result?.ipa).toBe('/baɪt/')
     expect(result?.synonyms).toEqual(['nibble', 'chew'])
     expect(result?.example).toBeNull()
+  })
+})
+
+describe('stripHtml', () => {
+  it('removes tags, nested sense lists and entities', () => {
+    expect(
+      stripHtml('Returning <a href="/wiki/x">quickly</a>; elastic. \n<ol><li>Sub-sense</li></ol> &amp; more'),
+    ).toBe('Returning quickly; elastic. & more')
+  })
+
+  it('drops inline <style> blocks', () => {
+    expect(stripHtml('A paved surface. <style data-mw="x">.mw-parser-output .defdate{font-size:smaller}</style>')).toBe(
+      'A paved surface.',
+    )
+  })
+})
+
+describe('parseWiktionary', () => {
+  it('uses the first non-empty English definition and example', () => {
+    const result = parseWiktionary({
+      en: [
+        {
+          partOfSpeech: 'Verb',
+          definitions: [
+            { definition: '<span class="usage-label-sense"></span>' },
+            {
+              definition: 'To <a href="/wiki/cut">cut</a> into something with the teeth.',
+              parsedExamples: [{ example: 'As soon as you <b>bite</b> that sandwich...' }],
+            },
+          ],
+        },
+      ],
+    })
+    expect(result).toEqual({
+      ipa: null,
+      partOfSpeech: 'verb',
+      definition: 'To cut into something with the teeth.',
+      example: 'As soon as you bite that sandwich...',
+      synonyms: [],
+    })
+  })
+
+  it('returns null without English definitions', () => {
+    expect(parseWiktionary({})).toBeNull()
+    expect(parseWiktionary({ en: [{ definitions: [{ definition: '<span></span>' }] }] })).toBeNull()
   })
 })

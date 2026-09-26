@@ -9,7 +9,7 @@ interface Props {
   onSelect: (word: Word) => void
 }
 
-const TH = 'px-4 py-3 text-left text-xs font-semibold tracking-wider text-ink-muted uppercase'
+const TH = 'px-4 py-3 text-left text-xs font-semibold tracking-wider whitespace-nowrap text-ink-muted uppercase'
 
 export function WordTable({ words, selectedId, onSelect }: Props) {
   const { t } = useI18n()

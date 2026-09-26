@@ -14,7 +14,7 @@ import {
   type Word,
   type WordInput,
 } from '../../lib/db'
-import { DictionaryError, lookupWord } from '../../lib/dictionary'
+import { DictionaryError, lookupWord, type DictionarySource } from '../../lib/dictionary'
 
 interface Props {
   word: Word | null // null = add new
@@ -38,8 +38,14 @@ interface FormState {
 }
 
 type LookupStatus =
-  | { kind: 'idle' | 'loading' | 'done' | 'notFound' | 'failed' }
+  | { kind: 'idle' | 'loading' | 'notFound' | 'failed' }
+  | { kind: 'done'; source: DictionarySource }
   | { kind: 'down'; status: number }
+
+const SOURCE_NAMES: Record<DictionarySource, string> = {
+  freeDictionary: 'Free Dictionary',
+  wiktionary: 'Wiktionary',
+}
 
 function lookupError(lookup: LookupStatus, t: Messages): string | null {
   if (lookup.kind === 'notFound') return t.words.form.notFound
@@ -109,7 +115,7 @@ export function WordFormDialog({ word, decks, existingWords, onSaved, onDeleted,
 
   async function autofill() {
     const query = form.word.trim()
-    if (!query) return
+    if (!query || lookup.kind === 'loading') return
     lookedUp.current = query.toLowerCase()
     setLookup({ kind: 'loading' })
     try {
@@ -130,7 +136,7 @@ export function WordFormDialog({ word, decks, existingWords, onSaved, onDeleted,
             ? [{ en: result.example, vi: '' }]
             : prev.examples,
       }))
-      setLookup({ kind: 'done' })
+      setLookup({ kind: 'done', source: result.source })
     } catch (err) {
       setLookup(err instanceof DictionaryError ? { kind: 'down', status: err.status } : { kind: 'failed' })
     }
@@ -238,7 +244,7 @@ export function WordFormDialog({ word, decks, existingWords, onSaved, onDeleted,
               </p>
             )}
             {lookup.kind === 'done' && (
-              <p className="mt-1.5 text-sm text-success">{f.filled}</p>
+              <p className="mt-1.5 text-sm text-success">{f.filled(SOURCE_NAMES[lookup.source])}</p>
             )}
           </Field>
 

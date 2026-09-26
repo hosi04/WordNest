@@ -2,6 +2,7 @@ import { LoaderCircle } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 import { Navigate, useLocation } from 'react-router'
 import { useAuth } from '../auth/AuthContext'
+import { clearDeliberateSignOut } from '../auth/signOut'
 import { FullPageSpinner } from '../components/FullPageSpinner'
 import { Logo } from '../components/Logo'
 import { PasswordInput } from '../components/PasswordInput'
@@ -83,6 +84,7 @@ export function LoginPage() {
 
     setSubmitting(true)
     setError(null)
+    clearDeliberateSignOut()
     try {
       if (signingUp) await signUpWithUsername(name, password)
       else await signInWithUsername(name, password)

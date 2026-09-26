@@ -10,6 +10,7 @@ import { HighlightedText } from '../components/study/HighlightedText'
 import { useI18n } from '../i18n/I18nContext'
 import { listWords, recordQuizAnswer } from '../lib/db'
 import { buildQuiz, XP_PER_CORRECT, type QuizQuestion } from '../lib/quiz'
+import { isSoundOn, playCorrect, playWrong, setSoundOn } from '../lib/sound'
 
 export function QuizPage() {
   const [round, setRound] = useState(0)
@@ -32,6 +33,7 @@ function QuizRound({ onRestart }: { onRestart: () => void }) {
   const [chosen, setChosen] = useState<number | null>(null)
   const [results, setResults] = useState<boolean[]>([])
   const [saveError, setSaveError] = useState('')
+  const [soundOn, setSound] = useState(isSoundOn)
 
   useEffect(() => {
     let cancelled = false
@@ -50,6 +52,10 @@ function QuizRound({ onRestart }: { onRestart: () => void }) {
   function choose(i: number) {
     if (!question || chosen !== null) return
     const correct = i === question.answer
+    if (soundOn) {
+      if (correct) playCorrect()
+      else playWrong()
+    }
     setChosen(i)
     setResults((r) => [...r, correct])
     recordQuizAnswer(question.word, correct).catch((err) =>
@@ -122,7 +128,17 @@ function QuizRound({ onRestart }: { onRestart: () => void }) {
 
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-10 pb-48 sm:pb-36">
-      <QuizProgress current={index} results={results} total={questions.length} xp={xp} />
+      <QuizProgress
+        current={index}
+        results={results}
+        total={questions.length}
+        xp={xp}
+        soundOn={soundOn}
+        onToggleSound={() => {
+          setSoundOn(!soundOn)
+          setSound(!soundOn)
+        }}
+      />
 
       <section className="flex flex-col items-center text-center">
         <p className="text-ink-muted">{t.quiz.prompt}</p>

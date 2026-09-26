@@ -137,7 +137,7 @@ export const en: Messages = {
       estimate: (minutes) =>
         `About ${plural(minutes, 'minute')}. Spaced repetition reminds you right before you forget.`,
       allDone: "You've reviewed every due card",
-      learnMoreHint: 'Learn a few new words to keep the momentum.',
+      learnMoreHint: 'Learn a few new words to keep the momentum going.',
       seeYouTomorrow: 'See you tomorrow.',
       start: 'Start review',
       learnNew: (n) => `Learn ${plural(n, 'new word')}`,
@@ -210,7 +210,7 @@ export const en: Messages = {
       dictionaryDown: (status) => `The dictionary is unavailable (error ${status}).`,
       lookupFailed: 'Could not look up the word.',
       typeManually: 'You can fill it in yourself.',
-      filled: 'Filled in from Free Dictionary.',
+      filled: (source) => `Filled in from ${source}.`,
       meaning: 'Vietnamese meaning',
       meaningPlaceholder: 'e.g. kiên cường, mau phục hồi',
       ipa: 'Pronunciation (IPA)',
@@ -263,6 +263,8 @@ export const en: Messages = {
     segment: (n, state) =>
       `Question ${n}: ${{ correct: 'correct', wrong: 'wrong', current: 'current', todo: 'not answered' }[state]}`,
     exit: 'Exit quiz',
+    soundOn: 'Mute sounds',
+    soundOff: 'Turn sounds on',
     prompt: 'Choose the correct meaning',
     correctAria: 'Correct answer',
     wrongAria: 'Your wrong choice',
@@ -287,7 +289,7 @@ export const en: Messages = {
   },
 
   stats: {
-    placeholder: 'This screen is not in the spec yet; to be discussed.',
+    placeholder: 'Detailed statistics are coming soon.',
   },
 
   settings: {
@@ -312,7 +314,7 @@ export const en: Messages = {
     },
     study: {
       title: 'Study',
-      description: 'The most new words added to your flashcard session each day. Due cards are always reviewed.',
+      description: 'The maximum number of new words added to your flashcard session each day. Due cards are always reviewed.',
       newPerDay: 'New words per day',
       saved: 'Saved. Applies from your next session.',
     },
@@ -356,7 +358,7 @@ export const en: Messages = {
       description: (columns) => `The first row holds the column names: ${columns}.`,
       deck: 'Add to deck',
       choose: 'Choose a .csv file',
-      hint: 'Save from Excel/Google Sheets as CSV (UTF-8)',
+      hint: 'Export from Excel/Google Sheets as CSV (UTF-8)',
       valid: (n) => `${plural(n, 'valid word')}`,
       duplicates: (n) => ` · ${n} already in your word book will be skipped`,
       moreErrors: (n) => `… and ${plural(n, 'more error')}`,

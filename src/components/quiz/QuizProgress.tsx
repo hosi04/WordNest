@@ -1,4 +1,4 @@
-import { Star, X } from 'lucide-react'
+import { Star, Volume2, VolumeX, X } from 'lucide-react'
 import { Link } from 'react-router'
 import { useI18n } from '../../i18n/I18nContext'
 
@@ -7,9 +7,11 @@ interface Props {
   results: boolean[] // answered questions, in order
   total: number
   xp: number
+  soundOn: boolean
+  onToggleSound: () => void
 }
 
-export function QuizProgress({ current, results, total, xp }: Props) {
+export function QuizProgress({ current, results, total, xp, soundOn, onToggleSound }: Props) {
   const { t } = useI18n()
   return (
     <header className="flex flex-wrap items-center gap-x-6 gap-y-3">
@@ -39,6 +41,16 @@ export function QuizProgress({ current, results, total, xp }: Props) {
           <Star className="size-4" aria-hidden />
           {xp} XP
         </span>
+        <button
+          type="button"
+          onClick={onToggleSound}
+          aria-pressed={soundOn}
+          aria-label={soundOn ? t.quiz.soundOn : t.quiz.soundOff}
+          title={soundOn ? t.quiz.soundOn : t.quiz.soundOff}
+          className="flex size-11 items-center justify-center rounded-control border border-line bg-card text-ink-muted hover:bg-soft"
+        >
+          {soundOn ? <Volume2 className="size-5" aria-hidden /> : <VolumeX className="size-5" aria-hidden />}
+        </button>
         <Link
           to="/"
           aria-label={t.quiz.exit}

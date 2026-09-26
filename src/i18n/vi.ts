@@ -216,7 +216,7 @@ export const vi = {
       dictionaryDown: (status: number) => `Từ điển đang lỗi (mã ${status}).`,
       lookupFailed: 'Không tra được từ.',
       typeManually: 'Bạn có thể tự nhập.',
-      filled: 'Đã tự điền từ Free Dictionary.',
+      filled: (source: string) => `Đã tự điền từ ${source}.`,
       meaning: 'Nghĩa tiếng Việt',
       meaningPlaceholder: 'ví dụ: kiên cường, mau phục hồi',
       ipa: 'Phiên âm (IPA)',
@@ -269,6 +269,8 @@ export const vi = {
     segment: (n: number, state: 'correct' | 'wrong' | 'current' | 'todo') =>
       `Câu ${n}: ${{ correct: 'đúng', wrong: 'sai', current: 'đang làm', todo: 'chưa làm' }[state]}`,
     exit: 'Thoát bài kiểm tra',
+    soundOn: 'Tắt âm thanh',
+    soundOff: 'Bật âm thanh',
     prompt: 'Chọn nghĩa đúng của từ',
     correctAria: 'Đáp án đúng',
     wrongAria: 'Bạn chọn sai',
@@ -293,7 +295,7 @@ export const vi = {
   },
 
   stats: {
-    placeholder: 'Màn hình này chưa có trong đặc tả, sẽ bàn thêm sau.',
+    placeholder: 'Tính năng thống kê chi tiết đang được phát triển.',
   },
 
   settings: {
@@ -318,20 +320,20 @@ export const vi = {
     },
     study: {
       title: 'Học tập',
-      description: 'Số từ mới tối đa được thêm vào phiên học thẻ mỗi ngày. Thẻ đến hạn ôn luôn được ôn hết.',
+      description: 'Số từ mới tối đa được thêm vào phiên học thẻ mỗi ngày. Các thẻ đến hạn luôn được ôn hết.',
       newPerDay: 'Số từ mới mỗi ngày',
       saved: 'Đã lưu. Áp dụng từ phiên học tiếp theo.',
     },
     backup: {
       title: 'Sao lưu',
-      description: 'Tải toàn bộ bộ từ, từ vựng, lịch sử ôn tập và cài đặt về máy dưới dạng file JSON.',
+      description: 'Tải về máy các bộ từ, từ vựng, lịch sử ôn tập và cài đặt dưới dạng file JSON.',
       export: 'Xuất dữ liệu (JSON)',
       fileName: 'wordnest-sao-luu',
       done: (words: number, reviews: number) => `Đã xuất ${words} từ và ${reviews} lượt ôn.`,
     },
     decks: {
       title: 'Bộ từ vựng',
-      description: 'Xóa một bộ không xóa các từ bên trong.',
+      description: 'Xóa bộ từ sẽ không xóa các từ bên trong.',
       empty: 'Chưa có bộ từ nào.',
       words: (n: number) => `${n} từ`,
       edit: (name: string) => `Sửa bộ ${name}`,
@@ -362,7 +364,7 @@ export const vi = {
       description: (columns: string) => `Dòng đầu là tên cột: ${columns}.`,
       deck: 'Thêm vào bộ',
       choose: 'Chọn file .csv',
-      hint: 'Lưu từ Excel/Google Sheets dạng CSV (UTF-8)',
+      hint: 'Xuất từ Excel/Google Sheets ở dạng CSV (UTF-8)',
       valid: (n: number) => `${n} từ hợp lệ`,
       duplicates: (n: number) => ` · ${n} từ đã có trong sổ sẽ bỏ qua`,
       moreErrors: (n: number) => `… và ${n} lỗi khác`,

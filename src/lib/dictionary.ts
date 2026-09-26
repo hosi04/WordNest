@@ -1,5 +1,10 @@
-// Free Dictionary API: https://dictionaryapi.dev
-const API = 'https://api.dictionaryapi.dev/api/v2/entries/en/'
+// Primary: Free Dictionary API (https://dictionaryapi.dev) — has IPA and synonyms but is often down.
+// Fallback: Wiktionary REST API — definitions and examples only.
+const FREE_DICTIONARY_API = 'https://api.dictionaryapi.dev/api/v2/entries/en/'
+const WIKTIONARY_API = 'https://en.wiktionary.org/api/rest_v1/page/definition/'
+const TIMEOUT_MS = 5000
+
+export type DictionarySource = 'freeDictionary' | 'wiktionary'
 
 export interface DictionaryResult {
   ipa: string | null
@@ -49,6 +54,51 @@ export function parseEntries(entries: ApiEntry[]): DictionaryResult | null {
   }
 }
 
+interface WiktionaryDefinition {
+  definition?: string
+  examples?: string[]
+  parsedExamples?: { example?: string }[]
+}
+
+interface WiktionaryEntry {
+  partOfSpeech?: string
+  definitions?: WiktionaryDefinition[]
+}
+
+/** Wiktionary returns HTML; keep only the top-level text. */
+export function stripHtml(html: string): string {
+  return html
+    .replace(/<(ol|ul|style|script)[\s\S]*?<\/\1>/g, ' ') // nested sub-senses, inline CSS
+    .replace(/<[^>]+>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;/g, "'")
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+export function parseWiktionary(data: { en?: WiktionaryEntry[] }): DictionaryResult | null {
+  const entries = data.en ?? []
+  const definitions = entries.flatMap((e) => e.definitions ?? [])
+  const definition = definitions.map((d) => stripHtml(d.definition ?? '')).find(Boolean) ?? null
+  if (!definition) return null
+  const example =
+    definitions
+      .flatMap((d) => [...(d.parsedExamples ?? []).map((p) => p.example ?? ''), ...(d.examples ?? [])])
+      .map(stripHtml)
+      .find(Boolean) ?? null
+  return {
+    ipa: null,
+    partOfSpeech: entries[0]?.partOfSpeech?.toLowerCase() ?? null,
+    definition,
+    example,
+    synonyms: [],
+  }
+}
+
 export class DictionaryError extends Error {
   readonly status: number
   constructor(status: number) {
@@ -58,10 +108,46 @@ export class DictionaryError extends Error {
   }
 }
 
-/** Returns null when the word is not in the dictionary. */
-export async function lookupWord(word: string): Promise<DictionaryResult | null> {
-  const res = await fetch(API + encodeURIComponent(word.trim().toLowerCase()))
-  if (res.status === 404) return null
-  if (!res.ok) throw new DictionaryError(res.status)
-  return parseEntries(await res.json())
+async function fetchJson(url: string): Promise<{ status: number; body: unknown }> {
+  const res = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT_MS) })
+  return { status: res.status, body: res.ok ? await res.json() : null }
+}
+
+async function fromFreeDictionary(word: string): Promise<DictionaryResult | null> {
+  const { status, body } = await fetchJson(FREE_DICTIONARY_API + encodeURIComponent(word))
+  if (status === 404) return null
+  if (status !== 200) throw new DictionaryError(status)
+  return parseEntries(body as ApiEntry[])
+}
+
+async function fromWiktionary(word: string): Promise<DictionaryResult | null> {
+  const { status, body } = await fetchJson(WIKTIONARY_API + encodeURIComponent(word.replace(/ /g, '_')))
+  if (status === 404) return null
+  if (status !== 200) throw new DictionaryError(status)
+  return parseWiktionary(body as { en?: WiktionaryEntry[] })
+}
+
+export interface LookupResult extends DictionaryResult {
+  source: DictionarySource
+}
+
+/**
+ * Looks the word up in Free Dictionary, falling back to Wiktionary when it is down, slow or
+ * has no entry. Returns null when neither knows the word; throws when both are unreachable.
+ */
+export async function lookupWord(input: string): Promise<LookupResult | null> {
+  const word = input.trim().toLowerCase()
+  let primaryError: unknown = null
+  try {
+    const result = await fromFreeDictionary(word)
+    if (result) return { ...result, source: 'freeDictionary' }
+  } catch (err) {
+    primaryError = err
+  }
+  try {
+    const result = await fromWiktionary(word)
+    return result && { ...result, source: 'wiktionary' }
+  } catch (err) {
+    throw primaryError ?? err
+  }
 }

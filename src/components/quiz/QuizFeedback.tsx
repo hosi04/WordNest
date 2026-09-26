@@ -14,32 +14,18 @@ interface Props {
 export function QuizFeedback({ word, correct, isLast, onNext }: Props) {
   const { t } = useI18n()
   const nextRef = useRef<HTMLButtonElement>(null)
-  const barRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     nextRef.current?.focus()
   }, [])
 
-  // Lift the floating language button above this bar while it is shown.
-  useEffect(() => {
-    const bar = barRef.current
-    if (!bar) return
-    const root = document.documentElement.style
-    const observer = new ResizeObserver(() => root.setProperty('--fab-lift', `${bar.offsetHeight}px`))
-    observer.observe(bar)
-    return () => {
-      observer.disconnect()
-      root.removeProperty('--fab-lift')
-    }
-  }, [])
-
   const synonyms = word.synonyms.length ? t.quiz.synonyms(word.synonyms.join(', ')) : ''
 
   return (
-    <div ref={barRef} className="fixed inset-x-0 bottom-0 z-10 px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:left-sidebar md:px-12 md:pb-8">
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-20 px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:left-sidebar md:px-12 md:pb-8">
       <div
         role="status"
-        className={`mx-auto flex max-w-5xl flex-wrap items-center gap-4 rounded-card p-5 ${
+        className={`pointer-events-auto mx-auto flex max-w-5xl flex-wrap items-center gap-4 rounded-card p-5 ${
           correct ? 'bg-success-soft text-success' : 'bg-accent-soft text-accent'
         }`}
       >

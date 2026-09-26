@@ -8,12 +8,10 @@ interface Props {
   aboveBottomNav?: boolean
 }
 
-// Bottom offset = base spacing + --fab-lift (set by fixed bottom bars, e.g. the quiz feedback).
+// Fixed spot; bars that slide in from the bottom (quiz feedback, z-20) simply cover it.
 const POSITION = {
-  withNav:
-    'bottom-[calc(var(--fab-lift,0px)_+_4.75rem_+_env(safe-area-inset-bottom))] md:bottom-[calc(var(--fab-lift,0px)_+_1.5rem)]',
-  withoutNav:
-    'bottom-[calc(var(--fab-lift,0px)_+_1rem_+_env(safe-area-inset-bottom))] md:bottom-[calc(var(--fab-lift,0px)_+_1.5rem)]',
+  withNav: 'bottom-[calc(4.75rem_+_env(safe-area-inset-bottom))] md:bottom-6',
+  withoutNav: 'bottom-[calc(1rem_+_env(safe-area-inset-bottom))] md:bottom-6',
 }
 
 /** Round floating button in the bottom-right corner for switching the display language. */
