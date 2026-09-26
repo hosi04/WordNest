@@ -55,6 +55,7 @@ async function loadDashboard(): Promise<DashboardData> {
     today,
     partOfDay: partOfDay(now),
     streak: streak.days,
+    studiedToday: streak.studiedToday,
     mastered: words.filter((w) => wordStatus(w) === 'mastered').length,
     due,
     newAvailable: Math.max(0, Math.min(newCount, settings.new_per_day - startedToday)),

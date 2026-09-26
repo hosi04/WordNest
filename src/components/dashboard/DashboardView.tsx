@@ -1,10 +1,12 @@
 import { Check, Copy, Flame, Target } from 'lucide-react'
 import type { Word } from '../../lib/db'
+import { useState } from 'react'
 import { useI18n } from '../../i18n/I18nContext'
 import type { DayCount, DeckProgress, PartOfDay } from '../../lib/stats'
 import { DashboardHeader } from './DashboardHeader'
 import { DeckList } from './DeckList'
 import { ReviewTodayCard } from './ReviewTodayCard'
+import { StreakCelebration } from '../streak/StreakCelebration'
 import { StatCard } from './StatCard'
 import { WeeklyChart } from './WeeklyChart'
 import { WordOfTheDayCard } from './WordOfTheDayCard'
@@ -13,6 +15,7 @@ export interface DashboardData {
   today: string
   partOfDay: PartOfDay
   streak: number
+  studiedToday: boolean
   mastered: number
   due: Word[]
   newAvailable: number
@@ -26,6 +29,7 @@ export interface DashboardData {
 
 export function DashboardView({ data, userName }: { data: DashboardData; userName: string }) {
   const { t } = useI18n()
+  const [showStreak, setShowStreak] = useState(false)
   return (
     <div className="flex flex-col gap-6 lg:gap-8">
       <DashboardHeader
@@ -35,7 +39,14 @@ export function DashboardView({ data, userName }: { data: DashboardData; userNam
       />
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-        <StatCard icon={Flame} iconClass="bg-gold-soft text-accent" value={String(data.streak)} label={t.dashboard.stats.streak} />
+        <StatCard
+          icon={Flame}
+          iconClass="bg-gold-soft text-accent"
+          value={String(data.streak)}
+          label={t.dashboard.stats.streak}
+          onClick={() => setShowStreak(true)}
+          actionLabel={t.celebration.open(data.streak)}
+        />
         <StatCard icon={Check} iconClass="bg-success-soft text-success" value={String(data.mastered)} label={t.dashboard.stats.mastered} />
         <StatCard icon={Copy} iconClass="bg-accent-soft text-accent" value={String(data.due.length)} label={t.dashboard.stats.due} />
         <StatCard
@@ -61,6 +72,9 @@ export function DashboardView({ data, userName }: { data: DashboardData; userNam
           <WeeklyChart days={data.week} total={data.weekTotal} change={data.weekChange} />
         </div>
       </div>
+      {showStreak && (
+        <StreakCelebration to={data.streak} studiedToday={data.studiedToday} onClose={() => setShowStreak(false)} />
+      )}
     </div>
   )
 }
