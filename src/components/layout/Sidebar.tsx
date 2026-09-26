@@ -16,7 +16,7 @@ export function Sidebar() {
   return (
     <aside className="fixed inset-y-0 left-0 hidden w-sidebar flex-col bg-ink p-4 text-white md:flex">
       <Link to="/" className="mb-6 px-2 pt-2">
-        <Logo tone="dark" className="h-12" />
+        <Logo tone="dark" size="h-12" tagline />
       </Link>
 
       <nav aria-label={t.nav.mainMenu} className="flex flex-col gap-1.5">

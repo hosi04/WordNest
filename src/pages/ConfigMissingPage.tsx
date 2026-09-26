@@ -7,7 +7,7 @@ export function ConfigMissingPage() {
   return (
     <div className="flex min-h-dvh items-center justify-center px-4">
       <div className="max-w-lg rounded-card border border-line bg-card p-8">
-        <Logo className="mb-6 h-9" />
+        <Logo size="h-9" tagline className="mb-6" />
         <h1 className="text-2xl">{t.config.title}</h1>
         <p className="mt-3 text-ink-muted">{t.config.body}</p>
         <pre className="mt-4 overflow-x-auto rounded-control bg-soft px-4 py-3 text-sm">

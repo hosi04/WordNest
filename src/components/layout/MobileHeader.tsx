@@ -8,7 +8,7 @@ export function MobileHeader() {
   return (
     <header className="flex items-center justify-between px-4 pt-4 md:hidden">
       <Link to="/">
-        <Logo className="h-9" />
+        <Logo size="h-8" tagline />
       </Link>
       <Link
         to="/settings"
