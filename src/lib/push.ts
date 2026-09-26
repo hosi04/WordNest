@@ -95,13 +95,13 @@ export async function disableReminders(): Promise<void> {
 }
 
 /** Asks the server to push a test notification to this device. */
-export async function sendTestReminder(lang: string, hour: number): Promise<void> {
+export async function sendTestReminder(lang: string, hour: number, name: string): Promise<void> {
   const sub = await currentSubscription()
   if (!sub) throw new Error('Not subscribed')
   const res = await fetch('/api/send-test', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ subscription: toTarget(sub), lang, hour }),
+    body: JSON.stringify({ subscription: toTarget(sub), lang, hour, name }),
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
 }

@@ -1,5 +1,6 @@
 import { BellOff, BellRing, LoaderCircle, Send } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useAuth } from '../../auth/AuthContext'
 import { useI18n } from '../../i18n/I18nContext'
 import {
   changeReminderHour,
@@ -12,6 +13,7 @@ import {
   reminderSupport,
   sendTestReminder,
 } from '../../lib/push'
+import { displayName } from '../../lib/user'
 import { INPUT, PRIMARY_BTN, SECONDARY_BTN, SettingsSection, StatusText } from './SettingsSection'
 
 type Status = { kind: 'ok' | 'error'; text: string } | null
@@ -21,6 +23,7 @@ const SELECT = `${INPUT.replace('w-full', '')} w-36`
 
 export function ReminderSection() {
   const { t, lang } = useI18n()
+  const { session } = useAuth()
   const r = t.settings.reminders
   const [support] = useState(reminderSupport)
   const [enabled, setEnabled] = useState<boolean | null>(null) // null = still checking
@@ -115,7 +118,7 @@ export function ReminderSection() {
                 <button
                   type="button"
                   disabled={busy}
-                  onClick={() => run(() => sendTestReminder(lang, hour), r.testSent)}
+                  onClick={() => run(() => sendTestReminder(lang, hour, displayName(session?.user)), r.testSent)}
                   className={PRIMARY_BTN}
                 >
                   {busy ? <LoaderCircle className="size-5 animate-spin" aria-hidden /> : <Send className="size-5" aria-hidden />}

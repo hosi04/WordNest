@@ -38,7 +38,18 @@ select cron.schedule(
         'p256dh', s.p256dh,
         'auth', s.auth,
         'hour', s.remind_hour,
-        'lang', coalesce(u.raw_user_meta_data ->> 'ui_language', 'vi')
+        'lang', coalesce(u.raw_user_meta_data ->> 'ui_language', 'vi'),
+        -- display name from Settings, else the username (email without the internal domain)
+        'name', coalesce(nullif(trim(u.raw_user_meta_data ->> 'full_name'), ''), split_part(u.email, '@', 1)),
+        -- consecutive study days up to yesterday = the streak that is at risk today
+        'streak', (
+          select coalesce(max(n), 0) from (
+            select d, row_number() over (order by d desc) as n
+            from (select distinct (r.reviewed_at at time zone 'Asia/Ho_Chi_Minh')::date as d
+                  from reviews r where r.user_id = s.user_id) days
+          ) ranked
+          where d = (now() at time zone 'Asia/Ho_Chi_Minh')::date - n::int
+        )
       ))
       from push_subscriptions s
       join auth.users u on u.id = s.user_id

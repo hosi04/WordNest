@@ -6,9 +6,10 @@ export async function POST(request: Request): Promise<Response> {
     subscription?: unknown
     lang?: string
     hour?: number
+    name?: string
   } | null
   const [target] = validTargets([body?.subscription])
   if (!target) return json({ error: 'invalid subscription' }, 400)
-  const result = await sendAll([{ ...target, lang: body?.lang, hour: body?.hour }], 'test')
+  const result = await sendAll([{ ...target, lang: body?.lang, hour: body?.hour, name: body?.name }], 'test')
   return json(result, result.sent ? 200 : 502)
 }
