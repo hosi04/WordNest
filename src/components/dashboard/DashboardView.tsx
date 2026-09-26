@@ -34,7 +34,7 @@ export function DashboardView({ data, userName }: { data: DashboardData; userNam
     <div className="flex flex-col gap-6 lg:gap-8">
       <DashboardHeader
         date={t.date.long(data.today)}
-        greeting={t.dashboard.greeting[data.partOfDay]}
+        greeting={t.dashboard.greeting[data.partOfDay](userName)}
         userName={userName}
       />
 

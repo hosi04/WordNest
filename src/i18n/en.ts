@@ -144,12 +144,11 @@ export const en: Messages = {
 
   dashboard: {
     greeting: {
-      morning: 'Good morning!',
-      noon: 'Good afternoon!',
-      afternoon: 'Good afternoon!',
-      evening: 'Good evening!',
+      morning: (name) => (name ? `Good morning, ${name}!` : 'Good morning!'),
+      noon: (name) => (name ? `Good afternoon, ${name}!` : 'Good afternoon!'),
+      afternoon: (name) => (name ? `Good afternoon, ${name}!` : 'Good afternoon!'),
+      evening: (name) => (name ? `Good evening, ${name}!` : 'Good evening!'),
     },
-    question: 'What shall we learn today?',
     account: (name) => `${name}'s account and settings`,
     loadError: (message) => `Could not load the overview: ${message}`,
     stats: {

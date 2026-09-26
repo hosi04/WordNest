@@ -147,13 +147,13 @@ export const vi = {
   },
 
   dashboard: {
+    /** "Chào buổi chiều, Thanh!" — without a name: "Chào buổi chiều!" */
     greeting: {
-      morning: 'Chào buổi sáng!',
-      noon: 'Chào buổi trưa!',
-      afternoon: 'Chào buổi chiều!',
-      evening: 'Chào buổi tối!',
+      morning: (name: string) => (name ? `Chào buổi sáng, ${name}!` : 'Chào buổi sáng!'),
+      noon: (name: string) => (name ? `Chào buổi trưa, ${name}!` : 'Chào buổi trưa!'),
+      afternoon: (name: string) => (name ? `Chào buổi chiều, ${name}!` : 'Chào buổi chiều!'),
+      evening: (name: string) => (name ? `Chào buổi tối, ${name}!` : 'Chào buổi tối!'),
     },
-    question: 'Hôm nay học gì nhỉ?',
     account: (name: string) => `Tài khoản của ${name} và cài đặt`,
     loadError: (message: string) => `Không tải được trang tổng quan: ${message}`,
     stats: {
