@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useAuth } from '../../auth/AuthContext'
 import { toDayKey } from '../../lib/date'
-import { getStreak } from '../../lib/db'
+import { getStreak, hadReviewTodayBefore } from '../../lib/db'
+import { shouldCelebrate } from '../../lib/streakCelebration'
 import { StreakCelebration } from './StreakCelebration'
 
 const SHOW_DELAY_MS = 500 // let the "session complete" screen appear first
@@ -27,10 +28,11 @@ function markCelebrated(userId: string, day: string) {
 }
 
 /**
- * Once a day (Vietnam time, per device), when the first study session of the day is completed,
- * shows the streak going from n to n + 1. Returns the overlay element to render, or null.
+ * When the first study session of the day (Vietnam time, across all devices) is completed, shows
+ * the streak going from n to n + 1. Returns the overlay element to render, or null.
+ * `sessionStartedAt` (ms) tells apart this session's reviews from earlier ones today.
  */
-export function useStreakCelebration(sessionCompleted: boolean) {
+export function useStreakCelebration(sessionCompleted: boolean, sessionStartedAt: number) {
   const { session } = useAuth()
   const userId = session?.user.id
   const [streak, setStreak] = useState<{ from: number; to: number } | null>(null)
@@ -42,9 +44,14 @@ export function useStreakCelebration(sessionCompleted: boolean) {
 
     let cancelled = false
     let timer = 0
-    getStreak()
-      .then(({ days, studiedToday }) => {
-        if (cancelled || !studiedToday || days < 1) return
+    Promise.all([getStreak(), hadReviewTodayBefore(new Date(sessionStartedAt).toISOString())])
+      .then(([{ days, studiedToday }, hadEarlierReviewToday]) => {
+        if (cancelled) return
+        if (!shouldCelebrate({ studiedToday, days, hadEarlierReviewToday, alreadyCelebratedToday: false })) {
+          // Not the first session today: remember that, so later sessions skip the checks.
+          if (hadEarlierReviewToday) markCelebrated(userId, today)
+          return
+        }
         timer = window.setTimeout(() => {
           markCelebrated(userId, today)
           setStreak({ from: days - 1, to: days })
@@ -55,7 +62,7 @@ export function useStreakCelebration(sessionCompleted: boolean) {
       cancelled = true
       window.clearTimeout(timer)
     }
-  }, [sessionCompleted, userId])
+  }, [sessionCompleted, sessionStartedAt, userId])
 
   return streak && <StreakCelebration from={streak.from} to={streak.to} onClose={() => setStreak(null)} />
 }

@@ -474,3 +474,14 @@ export async function exportAll() {
   ])
   return { app: 'WordNest', version: 1, exported_at: new Date().toISOString(), decks, words, reviews, settings }
 }
+
+/** Whether any review (flashcard or quiz) was logged today, Vietnam time, before `before` (ISO). */
+export async function hadReviewTodayBefore(before: string): Promise<boolean> {
+  const { count, error } = await client()
+    .from('reviews')
+    .select('id', { count: 'exact', head: true })
+    .gte('reviewed_at', startOfDayAgo(0))
+    .lt('reviewed_at', before)
+  if (error) throw error
+  return (count ?? 0) > 0
+}

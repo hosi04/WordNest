@@ -28,6 +28,7 @@ function optionState(i: number, chosen: number | null, answer: number): OptionSt
 
 function QuizRound({ onRestart }: { onRestart: () => void }) {
   const { t } = useI18n()
+  const [startedAt] = useState(() => Date.now())
   const [questions, setQuestions] = useState<QuizQuestion[] | null>(null)
   const [loadError, setLoadError] = useState('')
   const [index, setIndex] = useState(0)
@@ -49,7 +50,7 @@ function QuizRound({ onRestart }: { onRestart: () => void }) {
   const question = questions?.[index]
   const finished = questions !== null && index >= questions.length
   const xp = results.filter(Boolean).length * XP_PER_CORRECT
-  const celebration = useStreakCelebration(finished)
+  const celebration = useStreakCelebration(finished, startedAt)
 
   function choose(i: number) {
     if (!question || chosen !== null) return

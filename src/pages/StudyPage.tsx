@@ -62,6 +62,7 @@ export function StudyPage() {
 
 function StudySession({ deckId, wordId, only }: { deckId?: string; wordId: string | null; only: StudyOnly }) {
   const { t } = useI18n()
+  const [startedAt] = useState(() => Date.now())
   const [session, setSession] = useState<Session | null>(null)
   const [loadError, setLoadError] = useState('')
   const [flipped, setFlipped] = useState(false)
@@ -82,7 +83,7 @@ function StudySession({ deckId, wordId, only }: { deckId?: string; wordId: strin
   }, [deckId, wordId, only])
 
   const current = session?.queue[0]
-  const celebration = useStreakCelebration(Boolean(session && session.total > 0 && !current))
+  const celebration = useStreakCelebration(Boolean(session && session.total > 0 && !current), startedAt)
 
   const rate = useCallback(
     async (rating: Rating) => {
