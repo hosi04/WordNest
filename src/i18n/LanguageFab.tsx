@@ -10,8 +10,8 @@ interface Props {
 
 // Fixed spot; bars that slide in from the bottom (quiz feedback, z-20) simply cover it.
 const POSITION = {
-  withNav: 'bottom-[calc(4.75rem_+_env(safe-area-inset-bottom))] md:bottom-6',
-  withoutNav: 'bottom-[calc(1rem_+_env(safe-area-inset-bottom))] md:bottom-6',
+  withNav: 'bottom-[calc(var(--bottom-nav-h)_+_1rem)] md:bottom-6',
+  withoutNav: 'bottom-[calc(var(--safe-bottom)_+_1rem)] md:bottom-6',
 }
 
 /** Round floating button in the bottom-right corner for switching the display language. */

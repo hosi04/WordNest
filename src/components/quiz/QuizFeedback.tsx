@@ -22,7 +22,7 @@ export function QuizFeedback({ word, correct, isLast, onNext }: Props) {
   const synonyms = word.synonyms.length ? t.quiz.synonyms(word.synonyms.join(', ')) : ''
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-20 px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:left-sidebar md:px-12 md:pb-8">
+    <div className="pointer-events-none fixed inset-x-0 bottom-[var(--bottom-nav-h)] z-20 px-4 pb-3 md:bottom-0 md:left-sidebar md:px-12 md:pb-8">
       <div
         role="status"
         className={`pointer-events-auto mx-auto flex max-w-5xl flex-wrap items-center gap-4 rounded-card p-5 ${

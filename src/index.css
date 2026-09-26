@@ -35,6 +35,13 @@
   --spacing-sidebar: 240px;
 }
 
+:root {
+  /* Phones: space for the system home indicator / gesture bar (at least 8px). */
+  --safe-bottom: max(env(safe-area-inset-bottom), 0.5rem);
+  /* Height of the phone bottom menu: 56px of buttons + that space. */
+  --bottom-nav-h: calc(3.5rem + var(--safe-bottom));
+}
+
 @layer base {
   body {
     @apply bg-page font-sans text-ink antialiased;

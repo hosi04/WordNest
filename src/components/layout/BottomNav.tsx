@@ -7,7 +7,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label={t.nav.mainMenu}
-      className="fixed inset-x-0 bottom-0 z-10 grid grid-cols-5 border-t border-white/10 bg-ink pb-[env(safe-area-inset-bottom)] md:hidden"
+      className="fixed inset-x-0 bottom-0 z-10 grid grid-cols-5 border-t border-white/10 bg-ink pb-[var(--safe-bottom)] md:hidden"
     >
       {NAV_ITEMS.map(({ to, shortLabel, icon: Icon }) => (
         <NavLink

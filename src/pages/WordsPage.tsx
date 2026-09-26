@@ -163,7 +163,7 @@ export function WordsPage() {
           <aside
             aria-label={t.words.detail.aria(selected.word)}
             onClick={(e) => e.stopPropagation()}
-            className="relative max-h-[85dvh] w-full overflow-y-auto rounded-t-card bg-card p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))]"
+            className="relative max-h-[85dvh] w-full overflow-y-auto rounded-t-card bg-card p-6 pb-[calc(1.5rem_+_var(--safe-bottom))]"
           >
             <button
               type="button"

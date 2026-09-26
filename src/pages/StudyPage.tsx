@@ -196,7 +196,8 @@ function StudySession({ deckId, wordId, only }: { deckId?: string; wordId: strin
           </button>
         )}
 
-        <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-ink-muted">
+        {/* px-16 on phones keeps the legend clear of the floating language button. */}
+        <ul className="flex flex-wrap justify-center gap-x-6 gap-y-2 px-16 text-sm text-ink-muted sm:px-0">
           <Legend dot="bg-success" label={t.study.remembered(done.size)} />
           <Legend dot="bg-accent" label={t.study.again(again.size)} />
           <Legend dot="bg-ink-muted/40" label={t.study.remaining(remaining)} />
