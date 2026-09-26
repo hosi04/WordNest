@@ -1,4 +1,4 @@
-# WordNest
+# hosi (tên cũ: WordNest)
 
 Web học từ vựng tiếng Anh cho 1 người dùng (mục đích học tập cá nhân). Giao diện tiếng Việt.
 

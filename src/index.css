@@ -25,6 +25,10 @@
   --color-gold-soft: #fcf0cf;
   --color-gold-ink: #6e500b;
 
+  /* Logo on dark backgrounds: mist grey fading into ember cream. */
+  --color-mist: #dedcd7;
+  --color-ember-cream: #ffe0a3;
+
   --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Fraunces', ui-serif, Georgia, serif;
 

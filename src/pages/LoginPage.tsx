@@ -102,7 +102,7 @@ export function LoginPage() {
   return (
     <div className="flex min-h-dvh items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
-        <Logo className="mb-8 justify-center" />
+        <Logo className="mx-auto mb-8 block h-12" />
         <div className="rounded-card border border-line bg-card p-6 sm:p-8">
           <h1 className="text-3xl">{signingUp ? m.signUpTitle : m.signInTitle}</h1>
           <p className="mt-2 text-ink-muted">{m.subtitle}</p>

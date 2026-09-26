@@ -472,7 +472,7 @@ export async function exportAll() {
     selectAll('reviews'),
     selectAll('settings'),
   ])
-  return { app: 'WordNest', version: 1, exported_at: new Date().toISOString(), decks, words, reviews, settings }
+  return { app: 'hosi', version: 1, exported_at: new Date().toISOString(), decks, words, reviews, settings }
 }
 
 /** Whether any review (flashcard or quiz) was logged today, Vietnam time, before `before` (ISO). */

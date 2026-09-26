@@ -353,7 +353,7 @@ export const vi = {
       title: 'Sao lưu',
       description: 'Tải về máy các bộ từ, từ vựng, lịch sử ôn tập và cài đặt dưới dạng file JSON.',
       export: 'Xuất dữ liệu (JSON)',
-      fileName: 'wordnest-sao-luu',
+      fileName: 'hosi-sao-luu',
       done: (words: number, reviews: number) => `Đã xuất ${words} từ và ${reviews} lượt ôn.`,
     },
     decks: {

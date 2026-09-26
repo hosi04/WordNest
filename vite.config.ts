@@ -25,8 +25,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon.ico', 'apple-touch-icon-180x180.png'],
       manifest: {
-        name: 'WordNest — Học từ vựng tiếng Anh',
-        short_name: 'WordNest',
+        name: 'hosi — Học từ vựng tiếng Anh',
+        short_name: 'hosi',
         description: 'Học và ôn từ vựng tiếng Anh bằng flashcard lặp lại ngắt quãng.',
         lang: 'vi',
         start_url: '/',

@@ -349,7 +349,7 @@ export const en: Messages = {
       title: 'Backup',
       description: 'Download all your decks, words, review history and settings as a JSON file.',
       export: 'Export data (JSON)',
-      fileName: 'wordnest-backup',
+      fileName: 'hosi-backup',
       done: (words, reviews) => `Exported ${plural(words, 'word')} and ${plural(reviews, 'review')}.`,
     },
     decks: {
