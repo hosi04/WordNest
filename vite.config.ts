@@ -25,8 +25,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'favicon.ico', 'apple-touch-icon-180x180.png'],
       manifest: {
-        name: 'Learn English with hosi',
-        short_name: 'hosi',
+        name: 'Learn English with Hosi',
+        short_name: 'Hosi',
         description: 'Học và ôn từ vựng tiếng Anh bằng flashcard lặp lại ngắt quãng.',
         lang: 'vi',
         start_url: '/',

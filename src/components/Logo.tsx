@@ -21,17 +21,17 @@ const FLAME_SCALE = 20 / FLAME_WIDTH
 const FLAME_X = I_CENTER_X - 10
 const FLAME_Y = -50.5 - FLAME_HEIGHT * FLAME_SCALE
 
-/** The "hosi" wordmark, optionally with its tagline underneath. */
+/** The "Hosi" wordmark, optionally with its tagline underneath. */
 export function Logo({ tone = 'light', size = 'h-8', tagline = false, align = 'start', className = '' }: Props) {
   const id = useId()
   const dark = tone === 'dark'
   const wordmark = (
     <svg
-      viewBox="0 -82 167 85"
+      viewBox="0 -82 190 85"
       overflow="visible"
       className={`w-auto ${size}`}
       role="img"
-      aria-label={tagline ? `hosi, ${TAGLINE}` : 'hosi'}
+      aria-label={tagline ? `Hosi, ${TAGLINE}` : 'Hosi'}
     >
       {dark && (
         <defs>
