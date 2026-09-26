@@ -9,6 +9,7 @@ import { SpeakButton } from '../components/SpeakButton'
 import { HighlightedText } from '../components/study/HighlightedText'
 import { useI18n } from '../i18n/I18nContext'
 import { listWords, recordQuizAnswer } from '../lib/db'
+import { useStreakCelebration } from '../components/streak/useStreakCelebration'
 import { buildQuiz, XP_PER_CORRECT, type QuizQuestion } from '../lib/quiz'
 import { isSoundOn, playCorrect, playWrong, setSoundOn } from '../lib/sound'
 
@@ -48,6 +49,7 @@ function QuizRound({ onRestart }: { onRestart: () => void }) {
   const question = questions?.[index]
   const finished = questions !== null && index >= questions.length
   const xp = results.filter(Boolean).length * XP_PER_CORRECT
+  const celebration = useStreakCelebration(finished)
 
   function choose(i: number) {
     if (!question || chosen !== null) return
@@ -118,6 +120,7 @@ function QuizRound({ onRestart }: { onRestart: () => void }) {
       <div className="flex flex-col gap-4">
         <QuizSummary questions={questions} results={results} xp={xp} onRestart={onRestart} />
         {saveError && <SaveError message={saveError} />}
+        {celebration}
       </div>
     )
   }

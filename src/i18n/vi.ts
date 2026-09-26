@@ -78,6 +78,31 @@ export const vi = {
     notYet: 'Ôn ít nhất 1 thẻ để giữ chuỗi hôm nay.',
   },
 
+  celebration: {
+    title: (n: number) => `Chuỗi ${n} ngày!`,
+    sub: (n: number) => `Bạn đã học ${n} ngày liên tiếp. Giữ vững nhé!`,
+    startTitle: 'Bắt đầu chuỗi mới!',
+    startSub: 'Ngày thứ nhất đã xong. Hẹn bạn ngày mai để giữ lửa nhé.',
+    notYetToday: 'Ôn ít nhất 1 thẻ hôm nay để giữ chuỗi nhé!',
+    noStreakTitle: 'Chưa có chuỗi ngày',
+    noStreakSub: 'Ôn ít nhất 1 thẻ hôm nay để bắt đầu chuỗi mới.',
+    open: (n: number) => `Xem chuỗi ${n} ngày`,
+    daysLeft: (left: number, milestone: number) => `Còn ${left} ngày tới mốc ${milestone} ngày`,
+    nextMilestone: (milestone: number) => `Mốc tiếp theo: ${milestone} ngày`,
+    hintTouch: 'Chạm bất kỳ đâu để học tiếp',
+    hintMouse: 'Bấm bất kỳ đâu hoặc nhấn Esc để học tiếp',
+    live: (n: number) => `Chuỗi ${n} ngày`,
+    liveStart: 'Bắt đầu chuỗi mới. Chuỗi 1 ngày',
+    /** [badge, subtitle] for 7, 30, 100 days and full years. */
+    milestone: (days: number): [string, string] => {
+      if (days === 7) return ['Tròn 1 tuần', 'Một tuần không bỏ buổi nào. Thói quen đang thành hình!']
+      if (days === 30) return ['Tròn 1 tháng', '30 ngày liên tiếp. Bạn thật bền bỉ!']
+      if (days === 100) return ['Cột mốc 100 ngày', 'Ba chữ số! Rất ít người đi được tới đây.']
+      const years = Math.round(days / 365)
+      return [`Tròn ${years} năm`, `${years === 1 ? 'Một' : years} năm học mỗi ngày. Quá đỉnh!`]
+    },
+  },
+
   language: {
     label: 'Ngôn ngữ hiển thị',
     change: (current: string) => `Đổi ngôn ngữ hiển thị (đang dùng: ${current})`,

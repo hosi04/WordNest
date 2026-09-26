@@ -72,6 +72,33 @@ export const en: Messages = {
     notYet: 'Review at least 1 card to keep your streak today.',
   },
 
+  celebration: {
+    title: (n) => `${n}-day streak!`,
+    sub: (n) => `You've studied ${plural(n, 'day')} in a row. Keep it up!`,
+    startTitle: 'New streak started!',
+    startSub: 'Day one done. See you tomorrow to keep the flame alive.',
+    notYetToday: 'Review at least 1 card today to keep your streak!',
+    noStreakTitle: 'No streak yet',
+    noStreakSub: 'Review at least 1 card today to start a new streak.',
+    open: (n) => `View your ${n}-day streak`,
+    daysLeft: (left, milestone) => `${plural(left, 'day')} to your ${milestone}-day milestone`,
+    nextMilestone: (milestone) => `Next milestone: ${milestone} days`,
+    hintTouch: 'Tap anywhere to keep studying',
+    hintMouse: 'Click anywhere or press Esc to keep studying',
+    live: (n) => `${n}-day streak`,
+    liveStart: 'New streak started. 1-day streak',
+    milestone: (days) => {
+      if (days === 7) return ['One full week', 'A whole week without missing a day. The habit is forming!']
+      if (days === 30) return ['One full month', "30 days straight. That's real commitment!"]
+      if (days === 100) return ['100-day milestone', 'Triple digits! Few learners make it this far.']
+      const years = Math.round(days / 365)
+      return [
+        years === 1 ? 'One full year' : `${years} full years`,
+        years === 1 ? 'A whole year of daily practice. Incredible!' : `${years} years of daily practice. Incredible!`,
+      ]
+    },
+  },
+
   language: {
     label: 'Display language',
     change: (current) => `Change display language (current: ${current})`,

@@ -4,6 +4,7 @@ import { Link, useParams, useSearchParams } from 'react-router'
 import { Flashcard } from '../components/study/Flashcard'
 import { RatingButtons } from '../components/study/RatingButtons'
 import { StudyHeader } from '../components/study/StudyHeader'
+import { useStreakCelebration } from '../components/streak/useStreakCelebration'
 import {
   countNewStartedToday,
   getDeck,
@@ -81,6 +82,7 @@ function StudySession({ deckId, wordId, only }: { deckId?: string; wordId: strin
   }, [deckId, wordId, only])
 
   const current = session?.queue[0]
+  const celebration = useStreakCelebration(Boolean(session && session.total > 0 && !current))
 
   const rate = useCallback(
     async (rating: Rating) => {
@@ -152,10 +154,10 @@ function StudySession({ deckId, wordId, only }: { deckId?: string; wordId: strin
 
   if (!current) {
     return (
-      <EndScreen
-        title={t.study.doneTitle}
-        text={t.study.doneText(session.total, reviewCount)}
-      />
+      <>
+        <EndScreen title={t.study.doneTitle} text={t.study.doneText(session.total, reviewCount)} />
+        {celebration}
+      </>
     )
   }
 
