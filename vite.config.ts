@@ -42,6 +42,9 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api\//],
+        // Push notification handlers (study reminders).
+        importScripts: ['push-sw.js'],
         // Supabase data is never cached; only the app shell and Google Fonts are.
         runtimeCaching: [
           {

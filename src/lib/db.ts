@@ -485,3 +485,40 @@ export async function hadReviewTodayBefore(before: string): Promise<boolean> {
   if (error) throw error
   return (count ?? 0) > 0
 }
+
+// ---------- Study reminders (web push) ----------
+
+export interface PushTarget {
+  endpoint: string
+  p256dh: string
+  auth: string
+}
+
+/** Saves this device's push subscription and reminder hour (Vietnam time); one row per endpoint. */
+export async function savePushSubscription(target: PushTarget, remindHour: number): Promise<void> {
+  const { error } = await client()
+    .from('push_subscriptions')
+    .upsert({ ...target, remind_hour: remindHour }, { onConflict: 'endpoint' })
+  if (error) throw error
+}
+
+export async function updateReminderHour(endpoint: string, remindHour: number): Promise<void> {
+  const { error } = await client().from('push_subscriptions').update({ remind_hour: remindHour }).eq('endpoint', endpoint)
+  if (error) throw error
+}
+
+export async function deletePushSubscription(endpoint: string): Promise<void> {
+  const { error } = await client().from('push_subscriptions').delete().eq('endpoint', endpoint)
+  if (error) throw error
+}
+
+/** The saved reminder hour for this device, or null when it has no saved subscription. */
+export async function getReminderHour(endpoint: string): Promise<number | null> {
+  const { data, error } = await client()
+    .from('push_subscriptions')
+    .select('remind_hour')
+    .eq('endpoint', endpoint)
+    .maybeSingle()
+  if (error) throw error
+  return data?.remind_hour ?? null
+}

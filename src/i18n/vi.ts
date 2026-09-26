@@ -349,6 +349,28 @@ export const vi = {
       newPerDay: 'Số từ mới mỗi ngày',
       saved: 'Đã lưu. Áp dụng từ phiên học tiếp theo.',
     },
+    reminders: {
+      title: 'Nhắc học mỗi ngày',
+      description:
+        'Nếu đến giờ bạn chọn (giờ Việt Nam) mà hôm nay bạn chưa ôn thẻ nào, Hosi gửi thông báo tới thiết bị này, kể cả khi app đang đóng.',
+      hour: 'Giờ nhắc',
+      hourOption: (hour: number) => `${String(hour).padStart(2, '0')}:00`,
+      hourSaved: (hour: number) => `Đã đổi giờ nhắc thành ${hour}h.`,
+      enable: 'Bật nhắc học',
+      disable: 'Tắt nhắc học',
+      test: 'Gửi thử',
+      on: (hour: number) => `Đang bật trên thiết bị này, nhắc lúc ${hour}h.`,
+      enabled: 'Đã bật nhắc học trên thiết bị này.',
+      disabled: 'Đã tắt nhắc học trên thiết bị này.',
+      testSent: 'Đã gửi thông báo thử. Nếu chưa thấy, kiểm tra cài đặt thông báo của máy.',
+      checking: 'Đang kiểm tra…',
+      notConfigured: 'Chức năng nhắc học chưa được cấu hình trên máy chủ.',
+      unsupported: 'Trình duyệt này chưa hỗ trợ thông báo đẩy. Hãy dùng Chrome, Edge, hoặc Safari trên iPhone (iOS 16.4 trở lên).',
+      iosNeedsInstall:
+        'Trên iPhone, hãy thêm Hosi vào màn hình chính (Safari → Chia sẻ → Thêm vào MH chính), rồi mở Hosi từ màn hình chính để bật nhắc học.',
+      denied: 'Thông báo đang bị chặn. Hãy cho phép thông báo cho Hosi trong cài đặt của trình duyệt hoặc điện thoại, rồi thử lại.',
+      error: (message: string) => `Có lỗi: ${message}`,
+    },
     backup: {
       title: 'Sao lưu',
       description: 'Tải về máy các bộ từ, từ vựng, lịch sử ôn tập và cài đặt dưới dạng file JSON.',

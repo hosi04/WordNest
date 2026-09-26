@@ -5,6 +5,7 @@ import { BackupSection } from '../components/settings/BackupSection'
 import { CsvImport } from '../components/settings/CsvImport'
 import { DeckManager } from '../components/settings/DeckManager'
 import { LanguageSection } from '../components/settings/LanguageSection'
+import { ReminderSection } from '../components/settings/ReminderSection'
 import { StudySection } from '../components/settings/StudySection'
 import { useI18n } from '../i18n/I18nContext'
 import { getSettings, listDecks, listWords, type Deck, type Settings, type Word } from '../lib/db'
@@ -67,6 +68,7 @@ export function SettingsPage() {
               <LanguageSection />
               <AccountSection />
               <StudySection initialNewPerDay={settings.new_per_day} />
+              <ReminderSection />
               <BackupSection />
             </div>
             <div className="flex min-w-0 flex-col gap-6">

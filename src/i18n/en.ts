@@ -345,6 +345,28 @@ export const en: Messages = {
       newPerDay: 'New words per day',
       saved: 'Saved. Applies from your next session.',
     },
+    reminders: {
+      title: 'Daily study reminder',
+      description:
+        "If you haven't reviewed any card by your chosen time (Vietnam time), Hosi sends a notification to this device, even when the app is closed.",
+      hour: 'Reminder time',
+      hourOption: (hour) => `${hour % 12 || 12}:00 ${hour < 12 ? 'AM' : 'PM'}`,
+      hourSaved: (hour) => `Reminder time changed to ${hour % 12 || 12} ${hour < 12 ? 'AM' : 'PM'}.`,
+      enable: 'Turn on reminders',
+      disable: 'Turn off reminders',
+      test: 'Send a test',
+      on: (hour) => `On for this device, at ${hour % 12 || 12} ${hour < 12 ? 'AM' : 'PM'}.`,
+      enabled: 'Reminders are on for this device.',
+      disabled: 'Reminders are off for this device.',
+      testSent: "Test notification sent. If it doesn't show up, check your device's notification settings.",
+      checking: 'Checking…',
+      notConfigured: 'Study reminders are not configured on the server yet.',
+      unsupported: "This browser doesn't support push notifications. Use Chrome, Edge, or Safari on iPhone (iOS 16.4+).",
+      iosNeedsInstall:
+        'On iPhone, add Hosi to your Home Screen (Safari → Share → Add to Home Screen), then open Hosi from there to turn on reminders.',
+      denied: 'Notifications are blocked. Allow notifications for Hosi in your browser or phone settings, then try again.',
+      error: (message) => `Something went wrong: ${message}`,
+    },
     backup: {
       title: 'Backup',
       description: 'Download all your decks, words, review history and settings as a JSON file.',
