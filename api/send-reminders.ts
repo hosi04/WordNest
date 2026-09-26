@@ -10,5 +10,5 @@ export async function POST(request: Request): Promise<Response> {
   }
   const body = (await request.json().catch(() => null)) as { subscriptions?: unknown } | null
   const targets = validTargets(body?.subscriptions)
-  return json(await sendAll(targets, 'reminder'))
+  return json(await sendAll(targets))
 }

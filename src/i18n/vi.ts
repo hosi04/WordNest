@@ -362,7 +362,7 @@ export const vi = {
       on: (hour: number) => `Đang bật trên thiết bị này, nhắc lúc ${hour}h.`,
       enabled: 'Đã bật nhắc học trên thiết bị này.',
       disabled: 'Đã tắt nhắc học trên thiết bị này.',
-      testSent: 'Đã gửi thông báo thử. Nếu chưa thấy, kiểm tra cài đặt thông báo của máy.',
+      testSent: 'Đã gửi thử đúng nội dung thông báo nhắc học của hôm nay. Nếu chưa thấy, kiểm tra cài đặt thông báo của máy.',
       checking: 'Đang kiểm tra…',
       notConfigured: 'Chức năng nhắc học chưa được cấu hình trên máy chủ.',
       unsupported: 'Trình duyệt này chưa hỗ trợ thông báo đẩy. Hãy dùng Chrome, Edge, hoặc Safari trên iPhone (iOS 16.4 trở lên).',

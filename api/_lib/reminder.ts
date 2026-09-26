@@ -40,8 +40,6 @@ interface Copy {
   /** No streak to lose. */
   fresh: ((at: string) => string)[]
   at: (hour?: number) => string
-  testTitle: (name: string) => string
-  testBody: (hour?: number) => string
 }
 
 // Duolingo-style: short, personal, a little cheeky, always about the streak; wording rotates daily.
@@ -61,8 +59,6 @@ const COPY: Record<Lang, Copy> = {
       () => 'Hôm nay mình học vài từ nhé? Chỉ mất 2 phút thôi.',
     ],
     at: (hour) => (hour === undefined ? 'Đến giờ học rồi' : `Đã ${hour}h rồi`),
-    testTitle: (name) => `${name} ơi, Hosi đây 🔥`,
-    testBody: (hour) => `Thông báo thử: nhắc học${hour === undefined ? '' : ` lúc ${hour}h`} đã bật trên thiết bị này.`,
   },
   en: {
     fallbackName: 'there',
@@ -79,21 +75,17 @@ const COPY: Record<Lang, Copy> = {
       () => 'How about a few words today? It only takes 2 minutes.',
     ],
     at: (hour) => (hour === undefined ? "It's study time" : `It's ${hour12(hour)}`),
-    testTitle: (name) => `Hi ${name}, it's Hosi 🔥`,
-    testBody: (hour) =>
-      `Test notification: the${hour === undefined ? '' : ` ${hour12(hour)}`} study reminder is on for this device.`,
   },
 }
 
 const DAY_MS = 86_400_000
 const VIETNAM_OFFSET_MS = 7 * 3_600_000
 
-export function message(kind: 'reminder' | 'test', input: MessageInput = {}): Payload {
+/** The study reminder; "Send a test" in Settings shows exactly this too. */
+export function message(input: MessageInput = {}): Payload {
   const copy = COPY[input.lang === 'en' ? 'en' : 'vi']
   const hour = Number.isInteger(input.hour) && input.hour! >= 0 && input.hour! <= 23 ? input.hour : undefined
   const name = typeof input.name === 'string' && input.name.trim() ? input.name.trim().slice(0, 40) : copy.fallbackName
-  if (kind === 'test') return { title: copy.testTitle(name), body: copy.testBody(hour), url: '/' }
-
   const streak = Number.isInteger(input.streak) && input.streak! > 0 ? input.streak! : 0
   const day = Math.floor(((input.now ?? Date.now()) + VIETNAM_OFFSET_MS) / DAY_MS) // Vietnam calendar day
   const at = copy.at(hour)
@@ -127,7 +119,7 @@ export interface SendResult {
   failed: number
 }
 
-export async function sendAll(targets: Target[], kind: 'reminder' | 'test'): Promise<SendResult> {
+export async function sendAll(targets: Target[]): Promise<SendResult> {
   configure()
   const result: SendResult = { sent: 0, gone: [], failed: 0 }
   await Promise.all(
@@ -135,7 +127,7 @@ export async function sendAll(targets: Target[], kind: 'reminder' | 'test'): Pro
       try {
         await webpush.sendNotification(
           { endpoint: t.endpoint, keys: { p256dh: t.p256dh, auth: t.auth } },
-          JSON.stringify(message(kind, { lang: t.lang, hour: t.hour, name: t.name, streak: t.streak })),
+          JSON.stringify(message({ lang: t.lang, hour: t.hour, name: t.name, streak: t.streak })),
           { TTL: 60 * 60 * 4, urgency: 'high' },
         )
         result.sent++

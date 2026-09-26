@@ -49,7 +49,7 @@ afterAll(() => new Promise<void>((resolve) => server.close(() => resolve())))
 
 describe('sendAll', () => {
   it('sends encrypted, VAPID-signed pushes and reports expired subscriptions', async () => {
-    const result = await sendAll([fakeDevice('/ok'), fakeDevice('/gone'), fakeDevice('/fail')], 'reminder')
+    const result = await sendAll([fakeDevice('/ok'), fakeDevice('/gone'), fakeDevice('/fail')])
     expect(result).toEqual({ sent: 1, gone: [`${base}/gone`], failed: 1 })
     const ok = seen.find((r) => r.path === '/ok')!
     expect(ok.headers['content-encoding']).toBe('aes128gcm')

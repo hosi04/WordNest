@@ -7,45 +7,36 @@ const day = (n: number) => Date.UTC(2026, 8, 26, 12) + n * DAY
 
 describe('reminder message', () => {
   it('puts the display name in the title, with a fallback', () => {
-    expect(message('reminder', { name: 'Thanh', now: day(0) }).title).toContain('Thanh')
-    expect(message('reminder', { lang: 'en', name: 'Thanh', now: day(0) }).title).toContain('Thanh')
-    expect(message('reminder', { name: '   ', now: day(0) }).title).toContain('Bạn')
-    expect(message('reminder', { lang: 'en', now: day(0) }).title).toContain('there')
+    expect(message({ name: 'Thanh', now: day(0) }).title).toContain('Thanh')
+    expect(message({ lang: 'en', name: 'Thanh', now: day(0) }).title).toContain('Thanh')
+    expect(message({ name: '   ', now: day(0) }).title).toContain('Bạn')
+    expect(message({ lang: 'en', now: day(0) }).title).toContain('there')
   })
 
   it('talks about the streak at risk when there is one', () => {
-    const bodies = [0, 1, 2, 3].map((n) => message('reminder', { streak: 12, hour: 19, now: day(n) }).body)
+    const bodies = [0, 1, 2, 3].map((n) => message({ streak: 12, hour: 19, now: day(n) }).body)
     expect(bodies.every((b) => b.includes('12 ngày'))).toBe(true)
     expect(new Set(bodies).size).toBe(4) // a different line each day
     expect(bodies.some((b) => b.startsWith('Đã 19h rồi!'))).toBe(true)
   })
 
   it('invites to start a streak when there is none', () => {
-    const bodies = [0, 1, 2].map((n) => message('reminder', { streak: 0, hour: 21, now: day(n) }).body)
+    const bodies = [0, 1, 2].map((n) => message({ streak: 0, hour: 21, now: day(n) }).body)
     expect(bodies.some((b) => b.includes('bắt đầu một chuỗi'))).toBe(true)
     expect(bodies.some((b) => b.includes('Đã 21h rồi!'))).toBe(true)
     expect(bodies.every((b) => !b.includes('0 ngày'))).toBe(true)
   })
 
   it('uses a 12-hour clock in English', () => {
-    const bodies = [0, 1, 2, 3].map((n) => message('reminder', { lang: 'en', streak: 3, hour: 19, now: day(n) }).body)
+    const bodies = [0, 1, 2, 3].map((n) => message({ lang: 'en', streak: 3, hour: 19, now: day(n) }).body)
     expect(bodies.some((b) => b.startsWith("It's 7 PM!"))).toBe(true)
     expect(bodies.every((b) => b.includes('3-day streak'))).toBe(true)
   })
 
   it('always opens the flashcards, and falls back to generic wording for a bad hour', () => {
-    expect(message('reminder', { now: day(0) }).url).toBe('/study')
-    const bodies = [0, 1, 2, 3].map((n) => message('reminder', { streak: 5, hour: 99, now: day(n) }).body)
+    expect(message({ now: day(0) }).url).toBe('/study')
+    const bodies = [0, 1, 2, 3].map((n) => message({ streak: 5, hour: 99, now: day(n) }).body)
     expect(bodies.some((b) => b.startsWith('Đến giờ học rồi!'))).toBe(true)
-  })
-
-  it('builds the test notification', () => {
-    expect(message('test', { name: 'Thanh', hour: 7 })).toEqual({
-      title: 'Thanh ơi, Hosi đây 🔥',
-      body: 'Thông báo thử: nhắc học lúc 7h đã bật trên thiết bị này.',
-      url: '/',
-    })
-    expect(message('test', { lang: 'en', hour: 12 }).body).toContain('the 12 PM study reminder')
   })
 })
 

@@ -358,7 +358,7 @@ export const en: Messages = {
       on: (hour) => `On for this device, at ${hour % 12 || 12} ${hour < 12 ? 'AM' : 'PM'}.`,
       enabled: 'Reminders are on for this device.',
       disabled: 'Reminders are off for this device.',
-      testSent: "Test notification sent. If it doesn't show up, check your device's notification settings.",
+      testSent: "Sent today's reminder as a test. If it doesn't show up, check your device's notification settings.",
       checking: 'Checking…',
       notConfigured: 'Study reminders are not configured on the server yet.',
       unsupported: "This browser doesn't support push notifications. Use Chrome, Edge, or Safari on iPhone (iOS 16.4+).",

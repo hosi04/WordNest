@@ -1,7 +1,7 @@
 // Study reminders: subscribe this device to web push at a chosen hour (default 19:00, Vietnam time).
 // The hourly check and sending happen on the server (Supabase pg_cron → /api/send-reminders);
 // see docs/push-reminders.sql.
-import { deletePushSubscription, getReminderHour, savePushSubscription, updateReminderHour } from './db'
+import { deletePushSubscription, getReminderHour, getStreak, savePushSubscription, updateReminderHour } from './db'
 
 export const DEFAULT_REMINDER_HOUR = 19
 
@@ -94,14 +94,19 @@ export async function disableReminders(): Promise<void> {
   await sub.unsubscribe()
 }
 
-/** Asks the server to push a test notification to this device. */
+/**
+ * Pushes the real reminder to this device now, as it would read at `hour` if the user had not
+ * studied today: the streak at risk is the one up to yesterday.
+ */
 export async function sendTestReminder(lang: string, hour: number, name: string): Promise<void> {
   const sub = await currentSubscription()
   if (!sub) throw new Error('Not subscribed')
+  const { days, studiedToday } = await getStreak()
+  const streak = studiedToday ? days - 1 : days
   const res = await fetch('/api/send-test', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ subscription: toTarget(sub), lang, hour, name }),
+    body: JSON.stringify({ subscription: toTarget(sub), lang, hour, name, streak }),
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
 }
