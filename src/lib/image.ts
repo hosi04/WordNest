@@ -4,8 +4,8 @@ export function squareCrop(width: number, height: number): { x: number; y: numbe
   return { x: Math.round((width - size) / 2), y: Math.round((height - size) / 2), size }
 }
 
-/** Center-crops a picture to a square and shrinks it to size × size WebP (a few dozen KB). */
-export async function toSquareWebp(file: Blob, size = 320): Promise<Blob> {
+/** Center-crops a picture to a square and shrinks it to size × size WebP (big enough to view full screen, ~50 KB). */
+export async function toSquareWebp(file: Blob, size = 640): Promise<Blob> {
   const bitmap = await createImageBitmap(file)
   const crop = squareCrop(bitmap.width, bitmap.height)
   const canvas = document.createElement('canvas')

@@ -333,6 +333,8 @@ export const vi = {
       return `Tham gia từ tháng ${month} năm ${year}`
     },
     changePhoto: 'Đổi ảnh đại diện',
+    viewPhoto: 'Xem ảnh đại diện',
+    photoOf: (name: string) => `Ảnh đại diện của ${name}`,
     uploading: 'Đang tải ảnh lên…',
     photoSaved: 'Đã cập nhật ảnh đại diện.',
     photoError: (message: string) => `Không tải được ảnh lên: ${message}`,

@@ -325,6 +325,8 @@ export const en: Messages = {
     loadError: (message) => `Couldn't load the profile: ${message}`,
     joined: (dayKey) => `Joined ${monthYear.format(utc(dayKey))}`,
     changePhoto: 'Change profile picture',
+    viewPhoto: 'View profile picture',
+    photoOf: (name) => `${name}'s profile picture`,
     uploading: 'Uploading picture…',
     photoSaved: 'Profile picture updated.',
     photoError: (message) => `Couldn't upload the picture: ${message}`,
