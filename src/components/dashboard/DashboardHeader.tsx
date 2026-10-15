@@ -1,13 +1,15 @@
 import { Link } from 'react-router'
 import { useI18n } from '../../i18n/I18nContext'
+import { Avatar } from '../Avatar'
 
 interface Props {
   date: string
   greeting: string
   userName: string
+  avatarUrl: string | null
 }
 
-export function DashboardHeader({ date, greeting, userName }: Props) {
+export function DashboardHeader({ date, greeting, userName, avatarUrl }: Props) {
   const { t } = useI18n()
   return (
     <header className="flex flex-wrap items-end justify-between gap-4">
@@ -17,16 +19,11 @@ export function DashboardHeader({ date, greeting, userName }: Props) {
       </div>
       {userName && (
         <Link
-          to="/settings"
+          to="/profile"
           aria-label={t.dashboard.account(userName)}
           className="hidden min-h-12 max-w-full items-center gap-3 rounded-full sm:flex border border-line bg-card py-1.5 pr-5 pl-1.5 transition-colors hover:bg-white"
         >
-          <span
-            className="flex size-9 shrink-0 items-center justify-center rounded-full bg-accent-soft font-bold text-accent uppercase"
-            aria-hidden
-          >
-            {userName[0]}
-          </span>
+          <Avatar name={userName} url={avatarUrl} />
           <span className="truncate font-semibold">{userName}</span>
         </Link>
       )}

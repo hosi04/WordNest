@@ -32,6 +32,7 @@ export const vi = {
     wordsShort: 'Sổ từ',
     stats: 'Thống kê',
     settings: 'Cài đặt',
+    profile: 'Hồ sơ',
   },
 
   date: {
@@ -154,7 +155,7 @@ export const vi = {
       afternoon: (name: string) => (name ? `Chào buổi chiều, ${name}!` : 'Chào buổi chiều!'),
       evening: (name: string) => (name ? `Chào buổi tối, ${name}!` : 'Chào buổi tối!'),
     },
-    account: (name: string) => `Tài khoản của ${name} và cài đặt`,
+    account: (name: string) => `Hồ sơ của ${name}`,
     loadError: (message: string) => `Không tải được trang tổng quan: ${message}`,
     stats: {
       streak: 'Ngày học liên tiếp',
@@ -321,6 +322,29 @@ export const vi = {
 
   stats: {
     placeholder: 'Tính năng thống kê chi tiết đang được phát triển.',
+  },
+
+  profile: {
+    title: 'Hồ sơ',
+    loadError: (message: string) => `Không tải được hồ sơ: ${message}`,
+    /** dayKey = "2026-10-15" → "Tham gia từ tháng 10 năm 2026" */
+    joined: (dayKey: string) => {
+      const [year, month] = dayKey.split('-').map(Number)
+      return `Tham gia từ tháng ${month} năm ${year}`
+    },
+    changePhoto: 'Đổi ảnh đại diện',
+    uploading: 'Đang tải ảnh lên…',
+    photoSaved: 'Đã cập nhật ảnh đại diện.',
+    photoError: (message: string) => `Không tải được ảnh lên: ${message}`,
+    notImage: 'Hãy chọn một file ảnh.',
+    editAccount: 'Sửa tên và mật khẩu',
+    achievements: 'Thành tích',
+    stats: {
+      streak: 'Ngày học liên tiếp',
+      words: 'Từ đã lưu',
+      mastered: 'Từ đã thuộc',
+      reviews: 'Lượt ôn tập',
+    },
   },
 
   settings: {

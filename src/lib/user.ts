@@ -7,3 +7,9 @@ export function displayName(user: Pick<User, 'email' | 'user_metadata'> | null |
   if (fullName) return fullName.trim()
   return user?.email?.split('@')[0] ?? ''
 }
+
+/** Public URL of the profile picture (Storage), or null to show the initial instead. */
+export function avatarUrl(user: Pick<User, 'user_metadata'> | null | undefined): string | null {
+  const url = user?.user_metadata?.avatar_url
+  return typeof url === 'string' && url.startsWith('https://') ? url : null
+}

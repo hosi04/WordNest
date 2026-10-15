@@ -418,6 +418,28 @@ export async function updateDisplayName(name: string): Promise<void> {
   if (error) throw error
 }
 
+/**
+ * Uploads the picture to Storage (bucket "avatars", see docs/avatars.sql) and saves its public URL
+ * in the auth profile (user_metadata.avatar_url). The ?v= suffix makes browsers fetch the new file.
+ */
+export async function uploadAvatar(image: Blob): Promise<void> {
+  const session = await getSession()
+  if (!session) throw new Error('Not signed in')
+  const path = `${session.user.id}/avatar.webp`
+  const bucket = client().storage.from('avatars')
+  const { error } = await bucket.upload(path, image, { upsert: true, contentType: 'image/webp', cacheControl: '3600' })
+  if (error) throw error
+  const url = `${bucket.getPublicUrl(path).data.publicUrl}?v=${Date.now()}`
+  const { error: profileError } = await client().auth.updateUser({ data: { avatar_url: url } })
+  if (profileError) throw profileError
+}
+
+export async function countReviews(): Promise<number> {
+  const { count, error } = await client().from('reviews').select('id', { count: 'exact', head: true })
+  if (error) throw error
+  return count ?? 0
+}
+
 export type DeckInput = Pick<Deck, 'name' | 'color' | 'description'>
 
 export async function createDeck(input: DeckInput): Promise<Deck> {

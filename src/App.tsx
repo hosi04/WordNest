@@ -15,6 +15,7 @@ const StudyPage = lazy(() => import('./pages/StudyPage').then((m) => ({ default:
 const QuizPage = lazy(() => import('./pages/QuizPage').then((m) => ({ default: m.QuizPage })))
 const WordsPage = lazy(() => import('./pages/WordsPage').then((m) => ({ default: m.WordsPage })))
 const StatsPage = lazy(() => import('./pages/StatsPage').then((m) => ({ default: m.StatsPage })))
+const ProfilePage = lazy(() => import('./pages/ProfilePage').then((m) => ({ default: m.ProfilePage })))
 const SettingsPage = lazy(() => import('./pages/SettingsPage').then((m) => ({ default: m.SettingsPage })))
 
 export function App() {
@@ -40,6 +41,7 @@ export function App() {
                 <Route path="quiz" element={<QuizPage />} />
                 <Route path="words" element={<WordsPage />} />
                 <Route path="stats" element={<StatsPage />} />
+                <Route path="profile" element={<ProfilePage />} />
                 <Route path="settings" element={<SettingsPage />} />
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Route>

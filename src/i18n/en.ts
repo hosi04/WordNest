@@ -3,6 +3,7 @@
 import type { Messages } from './vi'
 
 const longDate = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' })
+const monthYear = new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
 const shortWeekday = new Intl.DateTimeFormat('en-US', { weekday: 'short', timeZone: 'UTC' })
 const utc = (dayKey: string) => new Date(`${dayKey}T00:00:00Z`)
 
@@ -29,6 +30,7 @@ export const en: Messages = {
     wordsShort: 'Words',
     stats: 'Statistics',
     settings: 'Settings',
+    profile: 'Profile',
   },
 
   date: {
@@ -149,7 +151,7 @@ export const en: Messages = {
       afternoon: (name) => (name ? `Good afternoon, ${name}!` : 'Good afternoon!'),
       evening: (name) => (name ? `Good evening, ${name}!` : 'Good evening!'),
     },
-    account: (name) => `${name}'s account and settings`,
+    account: (name) => `${name}'s profile`,
     loadError: (message) => `Could not load the overview: ${message}`,
     stats: {
       streak: 'Day streak',
@@ -316,6 +318,25 @@ export const en: Messages = {
 
   stats: {
     placeholder: 'Detailed statistics are coming soon.',
+  },
+
+  profile: {
+    title: 'Profile',
+    loadError: (message) => `Couldn't load the profile: ${message}`,
+    joined: (dayKey) => `Joined ${monthYear.format(utc(dayKey))}`,
+    changePhoto: 'Change profile picture',
+    uploading: 'Uploading picture…',
+    photoSaved: 'Profile picture updated.',
+    photoError: (message) => `Couldn't upload the picture: ${message}`,
+    notImage: 'Please choose an image file.',
+    editAccount: 'Edit name and password',
+    achievements: 'Achievements',
+    stats: {
+      streak: 'Day streak',
+      words: 'Words saved',
+      mastered: 'Words mastered',
+      reviews: 'Reviews',
+    },
   },
 
   settings: {

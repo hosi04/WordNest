@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { displayName } from './user'
+import { avatarUrl, displayName } from './user'
 
 describe('displayName', () => {
   it('prefers the full name saved in the profile', () => {
@@ -16,5 +16,18 @@ describe('displayName', () => {
 
   it('is empty without a user', () => {
     expect(displayName(null)).toBe('')
+  })
+})
+
+describe('avatarUrl', () => {
+  it('returns the saved https URL', () => {
+    const url = 'https://x.supabase.co/storage/v1/object/public/avatars/u/avatar.webp?v=1'
+    expect(avatarUrl({ user_metadata: { avatar_url: url } })).toBe(url)
+  })
+
+  it('ignores missing or non-https values', () => {
+    expect(avatarUrl({ user_metadata: {} })).toBeNull()
+    expect(avatarUrl({ user_metadata: { avatar_url: 'javascript:alert(1)' } })).toBeNull()
+    expect(avatarUrl(null)).toBeNull()
   })
 })

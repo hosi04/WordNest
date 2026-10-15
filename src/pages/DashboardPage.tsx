@@ -22,7 +22,7 @@ import {
   percentChange,
   wordOfTheDay,
 } from '../lib/stats'
-import { displayName } from '../lib/user'
+import { avatarUrl, displayName } from '../lib/user'
 import { wordStatus } from '../lib/wordStatus'
 
 
@@ -101,5 +101,5 @@ export function DashboardPage() {
     )
   }
 
-  return <DashboardView data={data} userName={displayName(session?.user)} />
+  return <DashboardView data={data} userName={displayName(session?.user)} avatarUrl={avatarUrl(session?.user)} />
 }

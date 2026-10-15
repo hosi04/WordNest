@@ -27,7 +27,15 @@ export interface DashboardData {
   weekChange: number | null
 }
 
-export function DashboardView({ data, userName }: { data: DashboardData; userName: string }) {
+export function DashboardView({
+  data,
+  userName,
+  avatarUrl,
+}: {
+  data: DashboardData
+  userName: string
+  avatarUrl: string | null
+}) {
   const { t } = useI18n()
   const [showStreak, setShowStreak] = useState(false)
   return (
@@ -36,6 +44,7 @@ export function DashboardView({ data, userName }: { data: DashboardData; userNam
         date={t.date.long(data.today)}
         greeting={t.dashboard.greeting[data.partOfDay](userName)}
         userName={userName}
+        avatarUrl={avatarUrl}
       />
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">

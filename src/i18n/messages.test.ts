@@ -19,6 +19,8 @@ describe('messages', () => {
     expect(vi.date.weekdayShort('2026-09-27')).toBe('CN')
     expect(en.date.long('2026-09-25')).toBe('Friday, September 25')
     expect(en.date.weekdayShort('2026-09-25')).toBe('Fri')
+    expect(vi.profile.joined('2026-10-15')).toBe('Tham gia từ tháng 10 năm 2026')
+    expect(en.profile.joined('2026-10-15')).toBe('Joined October 2026')
   })
 
   it('pluralizes English and formats next-review days', () => {
