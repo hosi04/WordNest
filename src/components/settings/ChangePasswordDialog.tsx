@@ -5,6 +5,7 @@ import { AuthFailure, updatePassword } from '../../lib/db'
 import { PASSWORD_MIN } from '../../lib/username'
 import { PasswordInput } from '../PasswordInput'
 import { INPUT, PRIMARY_BTN, SECONDARY_BTN } from './SettingsSection'
+import { errorMessage } from '../../lib/errors'
 
 interface Props {
   username: string // for password managers
@@ -38,7 +39,7 @@ export function ChangePasswordDialog({ username, onSaved, onClose }: Props) {
       setError(
         err instanceof AuthFailure && err.problem !== 'unknown'
           ? t.login.errors[err.problem]
-          : t.login.errors.unknown(err instanceof Error ? err.message : String(err)),
+          : t.login.errors.unknown(errorMessage(err)),
       )
       setSaving(false)
     }

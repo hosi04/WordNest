@@ -4,6 +4,7 @@ import { useI18n } from '../../i18n/I18nContext'
 import { deleteDeck, type Deck } from '../../lib/db'
 import { DeckFormDialog } from './DeckFormDialog'
 import { SECONDARY_BTN, SettingsSection } from './SettingsSection'
+import { errorMessage } from '../../lib/errors'
 
 interface Props {
   decks: Deck[]
@@ -32,7 +33,7 @@ export function DeckManager({ decks, wordCounts, onChange }: Props) {
       await deleteDeck(deck.id)
       onChange(decks.filter((d) => d.id !== deck.id))
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
+      setError(errorMessage(err))
     }
   }
 

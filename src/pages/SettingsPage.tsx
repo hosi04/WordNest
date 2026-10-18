@@ -9,6 +9,7 @@ import { ReminderSection } from '../components/settings/ReminderSection'
 import { StudySection } from '../components/settings/StudySection'
 import { useI18n } from '../i18n/I18nContext'
 import { getSettings, listDecks, listWords, type Deck, type Settings, type Word } from '../lib/db'
+import { errorMessage } from '../lib/errors'
 
 export function SettingsPage() {
   const { t } = useI18n()
@@ -20,7 +21,7 @@ export function SettingsPage() {
   const reloadWords = useCallback(() => {
     listWords()
       .then(setWords)
-      .catch((err) => setError(err instanceof Error ? err.message : String(err)))
+      .catch((err) => setError(errorMessage(err)))
   }, [])
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export function SettingsPage() {
         setDecks(d)
         setWords(w)
       })
-      .catch((err) => !cancelled && setError(err instanceof Error ? err.message : String(err)))
+      .catch((err) => !cancelled && setError(errorMessage(err)))
     return () => {
       cancelled = true
     }

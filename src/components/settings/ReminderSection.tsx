@@ -15,6 +15,7 @@ import {
 } from '../../lib/push'
 import { displayName } from '../../lib/user'
 import { INPUT, PRIMARY_BTN, SECONDARY_BTN, SettingsSection, StatusText } from './SettingsSection'
+import { errorMessage } from '../../lib/errors'
 
 type Status = { kind: 'ok' | 'error'; text: string } | null
 
@@ -57,7 +58,7 @@ export function ReminderSection() {
       const text =
         err instanceof PermissionDenied || notificationPermission() === 'denied'
           ? r.denied
-          : r.error(err instanceof Error ? err.message : String(err))
+          : r.error(errorMessage(err))
       setStatus({ kind: 'error', text })
     } finally {
       setBusy(false)

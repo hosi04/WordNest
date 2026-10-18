@@ -4,6 +4,7 @@ import { useI18n } from '../../i18n/I18nContext'
 import { createDeck, updateDeck, type Deck } from '../../lib/db'
 import { DECK_COLORS, DEFAULT_DECK_COLOR } from '../../lib/deckColors'
 import { INPUT, PRIMARY_BTN, SECONDARY_BTN } from './SettingsSection'
+import { errorMessage } from '../../lib/errors'
 
 interface Props {
   deck: Deck | null // null = new deck
@@ -33,7 +34,7 @@ export function DeckFormDialog({ deck, onSaved, onClose }: Props) {
     try {
       onSaved(deck ? await updateDeck(deck.id, input) : await createDeck(input))
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
+      setError(errorMessage(err))
       setSaving(false)
     }
   }

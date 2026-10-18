@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { useI18n } from '../../i18n/I18nContext'
 import { updateNewPerDay } from '../../lib/db'
 import { INPUT, PRIMARY_BTN, SettingsSection, StatusText } from './SettingsSection'
+import { errorMessage } from '../../lib/errors'
 
 type Status = { kind: 'ok' | 'error'; text: string } | null
 
@@ -25,7 +26,7 @@ export function StudySection({ initialNewPerDay }: { initialNewPerDay: number })
       await updateNewPerDay(Number(value))
       setStatus({ kind: 'ok', text: t.settings.study.saved })
     } catch (err) {
-      setStatus({ kind: 'error', text: err instanceof Error ? err.message : String(err) })
+      setStatus({ kind: 'error', text: errorMessage(err) })
     } finally {
       setSaving(false)
     }

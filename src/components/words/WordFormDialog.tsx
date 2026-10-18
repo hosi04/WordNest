@@ -15,6 +15,7 @@ import {
   type WordInput,
 } from '../../lib/db'
 import { DictionaryError, lookupWord, type DictionarySource } from '../../lib/dictionary'
+import { errorMessage } from '../../lib/errors'
 
 interface Props {
   word: Word | null // null = add new
@@ -158,7 +159,7 @@ export function WordFormDialog({ word, decks, existingWords, onSaved, onDeleted,
       onSaved(word ? await updateWord(word.id, input) : await createWord(input))
     } catch (err) {
       setError(
-        err instanceof DuplicateWordError ? f.duplicateNamed(err.word) : err instanceof Error ? err.message : String(err),
+        err instanceof DuplicateWordError ? f.duplicateNamed(err.word) : errorMessage(err),
       )
       setSaving(false)
     }
@@ -171,7 +172,7 @@ export function WordFormDialog({ word, decks, existingWords, onSaved, onDeleted,
       await deleteWord(word.id)
       onDeleted(word.id)
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err))
+      setError(errorMessage(err))
       setSaving(false)
     }
   }

@@ -67,24 +67,52 @@ export async function reminderHour(): Promise<number | null> {
 
 export class PermissionDenied extends Error {}
 
+function subscribe(reg: ServiceWorkerRegistration): Promise<PushSubscription> {
+  return reg.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY!),
+  })
+}
+
 /** Asks for permission (must run from a tap), subscribes and saves the subscription. */
 export async function enableReminders(hour: number): Promise<void> {
   const permission = await Notification.requestPermission()
   if (permission !== 'granted') throw new PermissionDenied(permission)
   const reg = await registration()
-  const sub =
-    (await reg.pushManager.getSubscription()) ??
-    (await reg.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY!),
-    }))
-  await savePushSubscription(toTarget(sub), hour)
+  const existing = await reg.pushManager.getSubscription()
+  if (!existing) return savePushSubscription(toTarget(await subscribe(reg)), hour)
+  try {
+    await savePushSubscription(toTarget(existing), hour)
+  } catch {
+    // The browser's subscription is saved under another account that used this device
+    // (row-level security forbids taking it over). Start a fresh one; the server drops the
+    // old row the next time a push to it comes back "gone".
+    await existing.unsubscribe()
+    await savePushSubscription(toTarget(await subscribe(reg)), hour)
+  }
 }
 
 export async function changeReminderHour(hour: number): Promise<void> {
   const sub = await currentSubscription()
   if (!sub) throw new Error('Not subscribed')
   await updateReminderHour(sub.endpoint, hour)
+}
+
+/**
+ * On sign-out: stop this device's reminders if they belong to the account signing out, so the
+ * next person using the device doesn't get them. Never blocks signing out.
+ */
+export async function releaseDeviceReminders(): Promise<void> {
+  try {
+    if (reminderSupport() !== 'ok') return
+    const sub = await currentSubscription()
+    if (sub && (await getReminderHour(sub.endpoint)) !== null) {
+      await deletePushSubscription(sub.endpoint)
+      await sub.unsubscribe()
+    }
+  } catch {
+    // ignore: offline etc.
+  }
 }
 
 export async function disableReminders(): Promise<void> {

@@ -8,6 +8,7 @@ import { useMediaQuery } from '../hooks/useMediaQuery'
 import { ensureSampleData, listDecks, listWords, type Deck, type Word } from '../lib/db'
 import { useI18n } from '../i18n/I18nContext'
 import { normalizeSearch, wordStatus, type WordStatus } from '../lib/wordStatus'
+import { errorMessage } from '../lib/errors'
 
 type Filter = 'all' | WordStatus
 type DialogState = { mode: 'create' } | { mode: 'edit'; word: Word } | null
@@ -38,7 +39,7 @@ export function WordsPage() {
         setDecks(d)
         setWords(w)
       })
-      .catch((err) => setLoadError(err instanceof Error ? err.message : String(err)))
+      .catch((err) => setLoadError(errorMessage(err)))
       .finally(() => setLoading(false))
   }, [])
 

@@ -5,6 +5,7 @@ import type { Messages } from '../../i18n/vi'
 import { CSV_COLUMNS, wordsFromCsv, type CsvError, type CsvResult } from '../../lib/csv'
 import { importWords, type Deck } from '../../lib/db'
 import { INPUT, PRIMARY_BTN, SettingsSection, StatusText } from './SettingsSection'
+import { errorMessage } from '../../lib/errors'
 
 interface Props {
   decks: Deck[]
@@ -63,7 +64,7 @@ export function CsvImport({ decks, existingWords, onImported }: Props) {
       setFileName('')
       onImported()
     } catch (err) {
-      setStatus({ kind: 'error', text: err instanceof Error ? err.message : String(err) })
+      setStatus({ kind: 'error', text: errorMessage(err) })
     } finally {
       setImporting(false)
     }

@@ -4,6 +4,7 @@ import { useI18n } from '../../i18n/I18nContext'
 import { toDayKey } from '../../lib/date'
 import { exportAll } from '../../lib/db'
 import { SECONDARY_BTN, SettingsSection, StatusText } from './SettingsSection'
+import { errorMessage } from '../../lib/errors'
 
 type Status = { kind: 'ok' | 'error'; text: string } | null
 
@@ -31,7 +32,7 @@ export function BackupSection() {
       downloadJson(data, `${b.fileName}-${toDayKey(new Date())}.json`)
       setStatus({ kind: 'ok', text: b.done(data.words.length, data.reviews.length) })
     } catch (err) {
-      setStatus({ kind: 'error', text: err instanceof Error ? err.message : String(err) })
+      setStatus({ kind: 'error', text: errorMessage(err) })
     } finally {
       setExporting(false)
     }

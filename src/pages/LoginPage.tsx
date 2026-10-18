@@ -18,6 +18,7 @@ import {
   usernameProblem,
   type UsernameProblem,
 } from '../lib/username'
+import { errorMessage } from '../lib/errors'
 
 type Mode = 'signIn' | 'signUp'
 
@@ -93,7 +94,7 @@ export function LoginPage() {
       setError(
         err instanceof AuthFailure
           ? { kind: 'auth', problem: err.problem, message: err.message }
-          : { kind: 'auth', problem: 'unknown', message: err instanceof Error ? err.message : String(err) },
+          : { kind: 'auth', problem: 'unknown', message: errorMessage(err) },
       )
       setSubmitting(false)
     }

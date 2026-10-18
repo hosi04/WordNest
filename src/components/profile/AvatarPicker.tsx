@@ -6,6 +6,7 @@ import { toSquareWebp } from '../../lib/image'
 import { Avatar } from '../Avatar'
 import { StatusText } from '../settings/SettingsSection'
 import { AvatarViewer } from './AvatarViewer'
+import { errorMessage } from '../../lib/errors'
 
 const AVATAR_SIZE = 'size-28 text-5xl ring-4 ring-card sm:size-32'
 
@@ -34,7 +35,7 @@ export function AvatarPicker({ name, url }: { name: string; url: string | null }
       await uploadAvatar(await toSquareWebp(file))
       setStatus({ kind: 'ok', text: p.photoSaved })
     } catch (err) {
-      setStatus({ kind: 'error', text: p.photoError(err instanceof Error ? err.message : String(err)) })
+      setStatus({ kind: 'error', text: p.photoError(errorMessage(err)) })
     } finally {
       setUploading(false)
     }

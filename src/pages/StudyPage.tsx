@@ -17,6 +17,7 @@ import {
 } from '../lib/db'
 import { useI18n } from '../i18n/I18nContext'
 import { isRelearning, RATINGS, type Rating } from '../lib/srs'
+import { errorMessage } from '../lib/errors'
 
 interface Session {
   deckName: string | null // null: all decks, or a single word from the word book
@@ -76,7 +77,7 @@ function StudySession({ deckId, wordId, only }: { deckId?: string; wordId: strin
     let cancelled = false
     loadSession(deckId, wordId, only)
       .then((s) => !cancelled && setSession(s))
-      .catch((err) => !cancelled && setLoadError(err instanceof Error ? err.message : String(err)))
+      .catch((err) => !cancelled && setLoadError(errorMessage(err)))
     return () => {
       cancelled = true
     }
@@ -104,7 +105,7 @@ function StudySession({ deckId, wordId, only }: { deckId?: string; wordId: strin
         setReviewCount((n) => n + 1)
         setFlipped(false)
       } catch (err) {
-        setRateError(err instanceof Error ? err.message : String(err))
+        setRateError(errorMessage(err))
       } finally {
         setSaving(false)
       }

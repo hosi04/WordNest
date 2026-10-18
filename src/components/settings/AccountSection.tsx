@@ -8,6 +8,7 @@ import { displayName } from '../../lib/user'
 import { usernameFromEmail } from '../../lib/username'
 import { ChangePasswordDialog } from './ChangePasswordDialog'
 import { INPUT, PRIMARY_BTN, SECONDARY_BTN, SettingsSection, StatusText } from './SettingsSection'
+import { errorMessage } from '../../lib/errors'
 
 type Status = { kind: 'ok' | 'error'; text: string } | null
 
@@ -33,7 +34,7 @@ export function AccountSection() {
     } catch (err) {
       setStatus({
         kind: 'error',
-        text: err instanceof Error ? err.message : String(err),
+        text: errorMessage(err),
       })
     } finally {
       setSaving(false)

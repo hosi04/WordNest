@@ -12,6 +12,7 @@ import { listWords, recordQuizAnswer } from '../lib/db'
 import { useStreakCelebration } from '../components/streak/useStreakCelebration'
 import { buildQuiz, XP_PER_CORRECT, type QuizQuestion } from '../lib/quiz'
 import { isSoundOn, playCorrect, playWrong, setSoundOn } from '../lib/sound'
+import { errorMessage } from '../lib/errors'
 
 export function QuizPage() {
   const [round, setRound] = useState(0)
@@ -41,7 +42,7 @@ function QuizRound({ onRestart }: { onRestart: () => void }) {
     let cancelled = false
     listWords()
       .then((words) => !cancelled && setQuestions(buildQuiz(words)))
-      .catch((err) => !cancelled && setLoadError(err instanceof Error ? err.message : String(err)))
+      .catch((err) => !cancelled && setLoadError(errorMessage(err)))
     return () => {
       cancelled = true
     }
@@ -62,7 +63,7 @@ function QuizRound({ onRestart }: { onRestart: () => void }) {
     setChosen(i)
     setResults((r) => [...r, correct])
     recordQuizAnswer(question.word, correct).catch((err) =>
-      setSaveError(err instanceof Error ? err.message : String(err)),
+      setSaveError(errorMessage(err)),
     )
   }
 
