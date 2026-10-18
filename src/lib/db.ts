@@ -1,8 +1,9 @@
 // All Supabase access (data + auth) goes through this module.
 import type { AuthError, Session } from '@supabase/supabase-js'
 import { SAMPLE_DECK, SAMPLE_WORDS } from '../data/sampleDeck'
-import { addDays, computeStreak, toDayKey } from './date'
+import { addDays, toDayKey } from './date'
 import { review, type Rating } from './srs'
+import { computeStreak, type StreakStatus } from './streak'
 import { usernameToEmail } from './username'
 import type { ReviewRow } from './stats'
 import { supabase } from './supabase'
@@ -93,9 +94,9 @@ export function onReviewSaved(listener: () => void): () => void {
   return () => reviewListeners.delete(listener)
 }
 
-export interface Streak {
-  days: number
-  studiedToday: boolean
+export interface Streak extends StreakStatus {
+  /** The streak as it stood before today's study: what a reminder today talks about. */
+  beforeToday: Pick<StreakStatus, 'days' | 'frozen'>
 }
 
 const PAGE_SIZE = 1000
@@ -104,23 +105,22 @@ export async function getStreak(): Promise<Streak> {
   const today = toDayKey(new Date())
   const studyDays = new Set<string>()
 
-  // Page through reviews (newest first) until the streak is broken by a gap.
+  // A frozen streak is never lost, so the whole study history counts.
   for (let from = 0; ; from += PAGE_SIZE) {
     const { data, error } = await client()
       .from('reviews')
       .select('reviewed_at')
-      .order('reviewed_at', { ascending: false })
+      .order('reviewed_at', { ascending: true })
       .range(from, from + PAGE_SIZE - 1)
     if (error) throw error
-
     for (const row of data) studyDays.add(toDayKey(row.reviewed_at))
-    const days = computeStreak(studyDays, today)
-    const oldest = data.length ? toDayKey(data[data.length - 1].reviewed_at) : null
-
-    if (data.length < PAGE_SIZE || (oldest && oldest < addDays(today, -days - 1))) {
-      return { days, studiedToday: studyDays.has(today) }
-    }
+    if (data.length < PAGE_SIZE) break
   }
+
+  const status = computeStreak(studyDays, today)
+  studyDays.delete(today)
+  const before = computeStreak(studyDays, today)
+  return { ...status, beforeToday: { days: before.days, frozen: before.frozen } }
 }
 
 // ---------- Decks & words ----------

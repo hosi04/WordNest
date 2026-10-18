@@ -1,4 +1,4 @@
-import { Check, Copy, Flame, Target } from 'lucide-react'
+import { Check, Copy, Flame, Snowflake, Target } from 'lucide-react'
 import type { Word } from '../../lib/db'
 import { useState } from 'react'
 import { useI18n } from '../../i18n/I18nContext'
@@ -16,6 +16,8 @@ export interface DashboardData {
   partOfDay: PartOfDay
   streak: number
   studiedToday: boolean
+  streakFrozen: boolean
+  thawedToday: boolean
   mastered: number
   due: Word[]
   newAvailable: number
@@ -49,10 +51,10 @@ export function DashboardView({
 
       <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
         <StatCard
-          icon={Flame}
-          iconClass="bg-gold-soft text-accent"
+          icon={data.streakFrozen ? Snowflake : Flame}
+          iconClass={data.streakFrozen ? 'bg-ice-soft text-ice-deep' : 'bg-gold-soft text-accent'}
           value={String(data.streak)}
-          label={t.dashboard.stats.streak}
+          label={data.streakFrozen ? t.dashboard.stats.streakFrozen : t.dashboard.stats.streak}
           onClick={() => setShowStreak(true)}
           actionLabel={t.celebration.open(data.streak)}
         />
@@ -82,7 +84,13 @@ export function DashboardView({
         </div>
       </div>
       {showStreak && (
-        <StreakCelebration to={data.streak} studiedToday={data.studiedToday} onClose={() => setShowStreak(false)} />
+        <StreakCelebration
+          to={data.streak}
+          studiedToday={data.studiedToday}
+          thawedToday={data.thawedToday}
+          state={data.streakFrozen ? 'frozen' : undefined}
+          onClose={() => setShowStreak(false)}
+        />
       )}
     </div>
   )

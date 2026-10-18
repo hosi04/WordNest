@@ -24,6 +24,7 @@ import {
 } from '../lib/stats'
 import { avatarUrl, displayName } from '../lib/user'
 import { wordStatus } from '../lib/wordStatus'
+import { errorMessage } from '../lib/errors'
 
 
 async function loadDashboard(): Promise<DashboardData> {
@@ -56,6 +57,8 @@ async function loadDashboard(): Promise<DashboardData> {
     partOfDay: partOfDay(now),
     streak: streak.days,
     studiedToday: streak.studiedToday,
+    streakFrozen: streak.frozen,
+    thawedToday: streak.thawedToday,
     mastered: words.filter((w) => wordStatus(w) === 'mastered').length,
     due,
     newAvailable: Math.max(0, Math.min(newCount, settings.new_per_day - startedToday)),
@@ -78,7 +81,7 @@ export function DashboardPage() {
     let cancelled = false
     loadDashboard()
       .then((d) => !cancelled && setData(d))
-      .catch((err) => !cancelled && setError(err instanceof Error ? err.message : String(err)))
+      .catch((err) => !cancelled && setError(errorMessage(err)))
     return () => {
       cancelled = true
     }

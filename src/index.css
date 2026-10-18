@@ -25,6 +25,13 @@
   --color-gold-soft: #fcf0cf;
   --color-gold-ink: #6e500b;
 
+  /* Frozen streak. */
+  --color-ice: #4f9fd1;
+  --color-ice-light: #a9dcf5;
+  --color-ice-soft: #e2f3fb;
+  --color-ice-deep: #1f6b99;
+  --color-frost: #f4fbff;
+
   /* Logo on dark backgrounds: mist grey fading into ember cream. */
   --color-mist: #dedcd7;
   --color-ember-cream: #ffe0a3;

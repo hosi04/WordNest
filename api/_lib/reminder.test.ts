@@ -20,6 +20,15 @@ describe('reminder message', () => {
     expect(bodies.some((b) => b.startsWith('Đã 19h rồi!'))).toBe(true)
   })
 
+  it('offers to thaw a frozen streak', () => {
+    const bodies = [0, 1, 2].map((n) => message({ streak: 2, frozen: true, hour: 19, now: day(n) }).body)
+    expect(bodies.every((b) => b.includes('2 ngày'))).toBe(true)
+    expect(bodies.some((b) => b.includes('phá băng'))).toBe(true)
+    expect(new Set(bodies).size).toBe(3)
+    const en = [0, 1, 2].map((n) => message({ lang: 'en', streak: 2, frozen: true, now: day(n) }).body)
+    expect(en.every((b) => b.includes('2-day streak'))).toBe(true)
+  })
+
   it('invites to start a streak when there is none', () => {
     const bodies = [0, 1, 2].map((n) => message({ streak: 0, hour: 21, now: day(n) }).body)
     expect(bodies.some((b) => b.includes('bắt đầu một chuỗi'))).toBe(true)

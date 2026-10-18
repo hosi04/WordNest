@@ -29,13 +29,13 @@ function markCelebrated(userId: string, day: string) {
 
 /**
  * When the first study session of the day (Vietnam time, across all devices) is completed, shows
- * the streak going from n to n + 1. Returns the overlay element to render, or null.
+ * the streak going from n to n + 1, or the ice breaking when that session thawed a frozen streak. Returns the overlay element to render, or null.
  * `sessionStartedAt` (ms) tells apart this session's reviews from earlier ones today.
  */
 export function useStreakCelebration(sessionCompleted: boolean, sessionStartedAt: number) {
   const { session } = useAuth()
   const userId = session?.user.id
-  const [streak, setStreak] = useState<{ from: number; to: number } | null>(null)
+  const [streak, setStreak] = useState<{ from?: number; to: number; thawing: boolean } | null>(null)
 
   useEffect(() => {
     if (!sessionCompleted || !userId) return
@@ -45,7 +45,7 @@ export function useStreakCelebration(sessionCompleted: boolean, sessionStartedAt
     let cancelled = false
     let timer = 0
     Promise.all([getStreak(), hadReviewTodayBefore(new Date(sessionStartedAt).toISOString())])
-      .then(([{ days, studiedToday }, hadEarlierReviewToday]) => {
+      .then(([{ days, studiedToday, thawedToday }, hadEarlierReviewToday]) => {
         if (cancelled) return
         if (!shouldCelebrate({ studiedToday, days, hadEarlierReviewToday, alreadyCelebratedToday: false })) {
           // Not the first session today: remember that, so later sessions skip the checks.
@@ -54,7 +54,8 @@ export function useStreakCelebration(sessionCompleted: boolean, sessionStartedAt
         }
         timer = window.setTimeout(() => {
           markCelebrated(userId, today)
-          setStreak({ from: days - 1, to: days })
+          // A thaw day adds nothing: break the ice instead of counting up.
+          setStreak(thawedToday ? { to: days, thawing: true } : { from: days - 1, to: days, thawing: false })
         }, SHOW_DELAY_MS)
       })
       .catch((err) => console.error('Could not load streak:', err))
@@ -64,5 +65,14 @@ export function useStreakCelebration(sessionCompleted: boolean, sessionStartedAt
     }
   }, [sessionCompleted, sessionStartedAt, userId])
 
-  return streak && <StreakCelebration from={streak.from} to={streak.to} onClose={() => setStreak(null)} />
+  return (
+    streak && (
+      <StreakCelebration
+        from={streak.from}
+        to={streak.to}
+        state={streak.thawing ? 'thawing' : undefined}
+        onClose={() => setStreak(null)}
+      />
+    )
+  )
 }

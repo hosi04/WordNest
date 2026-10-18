@@ -1,4 +1,4 @@
-import { Book, Check, Flame, LoaderCircle, Repeat, Settings } from 'lucide-react'
+import { Book, Check, Flame, LoaderCircle, Repeat, Settings, Snowflake } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { useAuth } from '../auth/AuthContext'
@@ -12,6 +12,7 @@ import { countReviews, getStreak, listWords, type Streak } from '../lib/db'
 import { avatarUrl, displayName } from '../lib/user'
 import { usernameFromEmail } from '../lib/username'
 import { wordStatus } from '../lib/wordStatus'
+import { errorMessage } from '../lib/errors'
 
 interface ProfileStats {
   streak: Streak
@@ -45,7 +46,7 @@ export function ProfilePage() {
     let cancelled = false
     loadStats()
       .then((s) => !cancelled && setStats(s))
-      .catch((err) => !cancelled && setError(err instanceof Error ? err.message : String(err)))
+      .catch((err) => !cancelled && setError(errorMessage(err)))
     return () => {
       cancelled = true
     }
@@ -85,10 +86,10 @@ export function ProfilePage() {
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
             <StatCard
-              icon={Flame}
-              iconClass="bg-gold-soft text-accent"
+              icon={stats.streak.frozen ? Snowflake : Flame}
+              iconClass={stats.streak.frozen ? 'bg-ice-soft text-ice-deep' : 'bg-gold-soft text-accent'}
               value={String(stats.streak.days)}
-              label={p.stats.streak}
+              label={stats.streak.frozen ? p.stats.streakFrozen : p.stats.streak}
               onClick={() => setShowStreak(true)}
               actionLabel={t.celebration.open(stats.streak.days)}
             />
@@ -103,6 +104,8 @@ export function ProfilePage() {
         <StreakCelebration
           to={stats.streak.days}
           studiedToday={stats.streak.studiedToday}
+          thawedToday={stats.streak.thawedToday}
+          state={stats.streak.frozen ? 'frozen' : undefined}
           onClose={() => setShowStreak(false)}
         />
       )}

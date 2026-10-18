@@ -19,17 +19,3 @@ export function addDays(dayKey: string, days: number): string {
   return d.toISOString().slice(0, 10)
 }
 
-/**
- * Consecutive study days ending today — or yesterday, since today's streak
- * is not lost until the day is over. Missing a full day resets it to 0.
- */
-export function computeStreak(studyDays: Iterable<string>, today: string): number {
-  const days = new Set(studyDays)
-  let day = days.has(today) ? today : addDays(today, -1)
-  let streak = 0
-  while (days.has(day)) {
-    streak++
-    day = addDays(day, -1)
-  }
-  return streak
-}

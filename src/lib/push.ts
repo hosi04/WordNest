@@ -124,17 +124,16 @@ export async function disableReminders(): Promise<void> {
 
 /**
  * Pushes the real reminder to this device now, as it would read at `hour` if the user had not
- * studied today: the streak at risk is the one up to yesterday.
+ * studied today: it talks about the streak as it stood before today's study.
  */
 export async function sendTestReminder(lang: string, hour: number, name: string): Promise<void> {
   const sub = await currentSubscription()
   if (!sub) throw new Error('Not subscribed')
-  const { days, studiedToday } = await getStreak()
-  const streak = studiedToday ? days - 1 : days
+  const { beforeToday } = await getStreak()
   const res = await fetch('/api/send-test', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ subscription: toTarget(sub), lang, hour, name, streak }),
+    body: JSON.stringify({ subscription: toTarget(sub), lang, hour, name, streak: beforeToday.days, frozen: beforeToday.frozen }),
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
 }
