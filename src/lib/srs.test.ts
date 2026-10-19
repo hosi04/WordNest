@@ -49,6 +49,12 @@ describe('review() on a reviewed card', () => {
     expect(r.reps).toBe(4)
   })
 
+  it('Dễ: at least 7 days, so it never ties with Nhớ', () => {
+    const second: SrsState = { ease: 2.5, interval_days: 1, reps: 1 }
+    expect(review(second, 3, NOW).interval_days).toBe(3)
+    expect(review(second, 4, NOW).interval_days).toBe(7)
+  })
+
   it('keeps at least 1 day for reviewed cards', () => {
     expect(review({ ease: 1.3, interval_days: 0, reps: 1 }, 2, NOW).interval_days).toBe(1)
   })

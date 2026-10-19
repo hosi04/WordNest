@@ -66,7 +66,7 @@ Dùng bản rút gọn của thuật toán SM-2 (giống Anki). Mỗi thẻ lưu
 | Quên (1) | ôn lại sau 1 phút | reps về 0, ôn lại sau 1 phút | −0.20 |
 | Khó (2) | ôn lại sau 6 phút | interval × 1.2 | −0.15 |
 | Nhớ (3) | 1 ngày | interval × ease | không đổi |
-| Dễ (4) | 4 ngày | interval × ease × 1.3 | +0.15 |
+| Dễ (4) | 4 ngày | interval × ease × 1.3, tối thiểu 7 ngày | +0.15 |
 
 `ease` không thấp hơn 1.3. Khoảng cách làm tròn và tối thiểu 1 ngày với thẻ đã ôn. Viết thành hàm thuần trong `src/lib/srs.ts`:
 
@@ -75,6 +75,7 @@ export type Rating = 1 | 2 | 3 | 4;
 export interface SrsState { ease: number; interval_days: number; reps: number; }
 
 const MIN = 60_000, DAY = 86_400_000;
+const EASY_MIN_DAYS = 7; // Dễ on a reviewed card always waits at least a week, so it never ties with Nhớ
 
 export function review(s: SrsState, r: Rating, now = Date.now()) {
   let { ease, interval_days, reps } = s;
@@ -88,7 +89,8 @@ export function review(s: SrsState, r: Rating, now = Date.now()) {
   } else {
     if (r === 4) ease += 0.15;
     if (reps === 0) interval_days = r === 4 ? 4 : 1;
-    else interval_days = Math.max(1, Math.round(interval_days * ease * (r === 4 ? 1.3 : 1)));
+    else if (r === 4) interval_days = Math.max(EASY_MIN_DAYS, Math.round(interval_days * ease * 1.3));
+    else interval_days = Math.max(1, Math.round(interval_days * ease));
     reps++; dueMs = now + interval_days * DAY;
   }
   return { ease, interval_days, reps, due_at: new Date(dueMs).toISOString() };

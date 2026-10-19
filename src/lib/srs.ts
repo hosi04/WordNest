@@ -4,6 +4,7 @@ export type Rating = 1 | 2 | 3 | 4;
 export interface SrsState { ease: number; interval_days: number; reps: number; }
 
 const MIN = 60_000, DAY = 86_400_000;
+const EASY_MIN_DAYS = 7; // Dễ on a reviewed card always waits at least a week, so it never ties with Nhớ
 
 export function review(s: SrsState, r: Rating, now = Date.now()) {
   let { ease, interval_days, reps } = s;
@@ -17,7 +18,8 @@ export function review(s: SrsState, r: Rating, now = Date.now()) {
   } else {
     if (r === 4) ease += 0.15;
     if (reps === 0) interval_days = r === 4 ? 4 : 1;
-    else interval_days = Math.max(1, Math.round(interval_days * ease * (r === 4 ? 1.3 : 1)));
+    else if (r === 4) interval_days = Math.max(EASY_MIN_DAYS, Math.round(interval_days * ease * 1.3));
+    else interval_days = Math.max(1, Math.round(interval_days * ease));
     reps++; dueMs = now + interval_days * DAY;
   }
   return { ease, interval_days, reps, due_at: new Date(dueMs).toISOString() };
